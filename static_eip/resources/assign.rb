@@ -4,7 +4,7 @@ property :name, String, default: 'assign static EIP'
 property :role, String
 property :environment, String
 property :data_bag_name, String, default: 'private'
-property :data_bag_item_name, String, default: 'auto_eip_config.json'
+property :data_bag_item_name, String, default: 'auto_eip_config'
 property :sentinel_file, String
 
 action :create do
@@ -16,6 +16,7 @@ action :create do
   # This script helps show the current EIP. It's not super useful otherwise.
   cookbook_file '/usr/local/bin/get-current-eips' do
     source 'get-current-eips'
+    cookbook 'static_eip' # https://github.com/chef/chef/issues/3681
     owner 'root'
     group 'root'
     mode '0755'
@@ -26,6 +27,7 @@ action :create do
   # https://github.com/skymill/aws-ec2-assign-elastic-ip/pull/25
   cookbook_file '/usr/local/bin/aws-grab-static-eip' do
     source 'aws-grab-static-eip'
+    cookbook 'static_eip' # https://github.com/chef/chef/issues/3681
     owner 'root'
     group 'root'
     mode '0755'
@@ -60,7 +62,7 @@ action :create do
   # aws-grab-static-eip.
 
   bag_name = new_resource.data_bag_name
-  bag_item_name = new_resources.data_bag_item_name
+  bag_item_name = new_resource.data_bag_item_name
   begin
     data_bag(bag_name)
   rescue Net::HTTPServerException
