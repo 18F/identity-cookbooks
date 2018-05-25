@@ -100,7 +100,7 @@ action :create do
   execute 'assign eips' do
     command ['aws-grab-static-eip'] + assign_opts
     notifies :run, 'execute[sleep after eip assignment]', :immediately
-    not_if { File.exist?(sentinel_file) }
+    not_if { ::File.exist?(sentinel_file) }
     live_stream true
 
     # Retry assignment a few times. We can fail the first time if we hit the
