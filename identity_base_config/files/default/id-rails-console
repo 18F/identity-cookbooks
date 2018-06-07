@@ -1,0 +1,31 @@
+#!/bin/bash
+set -eu
+
+app=idp
+APP_USER="${APP_USER-websrv}"
+
+usage() {
+    cat >&2 <<EOM
+usage: $(basename "$0") [APP]
+
+Run a rails console for APP (default "idp").
+This involves using sudo to change to the app service user, default $APP_USER.
+(Override by setting APP_USER).
+EOM
+}
+
+if [ $# -ge 1 ]; then
+    case "$1" in
+        -h|--help)
+            usage
+            exit
+            ;;
+        *)
+            app="$1"
+            ;;
+    esac
+fi
+
+set -x
+
+exec sudo -H -u "$APP_USER" sh -c "cd '/srv/$app/current'; bundle exec rails c"
