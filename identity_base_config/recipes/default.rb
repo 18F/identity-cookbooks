@@ -64,6 +64,13 @@ cookbook_file '/usr/local/bin/id-git' do
   mode '0755'
 end
 
+cookbook_file '/usr/local/bin/id-rails-console' do
+  source 'id-rails-console'
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
 cookbook_file '/usr/local/bin/git-with-key' do
   source 'git-with-key'
   owner 'root'
