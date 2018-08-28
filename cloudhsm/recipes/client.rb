@@ -24,3 +24,6 @@ dpkg_package 'cloudhsm-client-pkcs11' do
 end
 
 apt_package 'libengine-pkcs11-openssl'
+
+node.default['cloudhsm'] ||= {}
+node.default['cloudhsm']['client_recipe_run'] = true

@@ -1,5 +1,7 @@
 require 'aws-sdk-cloudhsmv2'
 
+# The caller must include_recipe 'cloudhsm
+
 resource_name :cloudhsm_config
 
 property :name, String, default: 'create CloudHSM config'
@@ -38,12 +40,18 @@ action :create do
 
   service 'cloudhsm-client' do
     action :nothing # notify-only
+    retries 3 # doesn't always start on the first try
   end
 
-  # For obscure reasons, it is unclear if include_recipe inside a resource is a
-  # bad idea
+  # Because chef ordering is terrible, include_recipe inside a resource doesn't
+  # actually cause the included recipe to run before all of this runs. The
+  # caller must first use include_recipe 'cloudhsm::client' to get
+  # dependencies.
   # https://github.com/chef/chef/issues/4260
-  include_recipe 'cloudhsm::client'
+  # include_recipe 'cloudhsm::client'
+  unless node.fetch('cloudhsm', {})['client_recipe_run']
+    raise "Should call `include_recipe 'cloudhsm::client'` before cloudhsm_config"
+  end
 
   # These are the documented steps for running commands to configure the
   # cloudhsm client:
