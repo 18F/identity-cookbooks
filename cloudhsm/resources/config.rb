@@ -40,7 +40,8 @@ action :create do
 
   service 'cloudhsm-client' do
     action :nothing # notify-only
-    retries 3 # doesn't always start on the first try
+    retries 6 # doesn't always start on the first try
+    retry_delay 5
   end
 
   # Because chef ordering is terrible, include_recipe inside a resource doesn't
