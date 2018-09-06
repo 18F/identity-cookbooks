@@ -1,0 +1,6 @@
+DEPENDENCIES
+  identity_shared_attributes
+    path: ../identity_shared_attributes
+
+GRAPH
+  identity_shared_attributes (0.1.0)
