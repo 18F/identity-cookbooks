@@ -1,7 +1,7 @@
 default[:passenger][:production][:path] = '/opt/nginx'
 
-cache_dir = '/var/cache/chef' # must match default['login_dot_gov']['cache_dir']
-openssl_version = '1.0.2o' # must match the one in default['login_dot_gov']['openssl']['binary']
+cache_dir = node.fetch(:identity_shared_attributes).fetch(:cache_dir)
+openssl_version = node.fetch(:identity_shared_attributes).fetch(:openssl_version)
 openssl_srcpath = "#{cache_dir}/openssl-#{openssl_version}"
 default[:passenger][:production][:configure_flags] = "--with-ipv6 --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-openssl=#{openssl_srcpath}"
 default[:passenger][:production][:log_path] = '/var/log/nginx'
@@ -30,7 +30,7 @@ default[:passenger][:production][:worker_connections] = 1024
 default[:passenger][:production][:status_server] = true
 
 default[:passenger][:production][:version] = '5.3.3'
-default[:passenger][:production][:user] = 'websrv' # must match default['login_dot_gov']['web_system_user']
+default[:passenger][:production][:user] = node.fetch(:identity_shared_attributes).fetch(:production_user)
 
 # Allow our local /16 to proxy setting X-Forwarded-For
 # This is a little broad, but because we expect security group rules to prevent

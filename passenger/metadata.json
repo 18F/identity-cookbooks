@@ -8,6 +8,7 @@
   "platforms": {
   },
   "dependencies": {
+    "identity_shared_attributes": ">= 0.0.1"
   },
   "recommendations": {
   },
