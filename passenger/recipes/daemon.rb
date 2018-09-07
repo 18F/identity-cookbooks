@@ -115,9 +115,9 @@ end
 # if the proxy isn't enabled
 file "/etc/default/passenger" do
   content <<-EOM
-export http_proxy=Chef::Config['http_proxy']
-export https_proxy=Chef::Config['https_proxy']
-export no_proxy=Chef::Config['no_proxy']
+export http_proxy=#{Chef::Config['http_proxy']}
+export https_proxy=#{Chef::Config['https_proxy']}
+export no_proxy=#{Chef::Config['no_proxy']}
 export PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR='#{native_support_dir}'
   EOM
 end
