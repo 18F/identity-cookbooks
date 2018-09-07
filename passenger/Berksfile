@@ -1,0 +1,3 @@
+source 'https://supermarket.chef.io'
+
+cookbook 'identity_shared_attributes', path: "../identity_shared_attributes"
