@@ -4,6 +4,17 @@ set -eu
 app=idp
 APP_USER="${APP_USER-websrv}"
 
+ENV_VARS=("app=$app")
+
+# Pass through ALLOW_CONSOLE_DB_WRITE_ACCESS, if set
+if [ -n "${ALLOW_CONSOLE_DB_WRITE_ACCESS-}" ]; then
+    ENV_VARS=(
+        "${ENV_VARS[@]}"
+        "ALLOW_CONSOLE_DB_WRITE_ACCESS=$ALLOW_CONSOLE_DB_WRITE_ACCESS"
+    )
+fi
+
+
 usage() {
     cat >&2 <<EOM
 usage: $(basename "$0") [APP]
@@ -11,6 +22,9 @@ usage: $(basename "$0") [APP]
 Run a rails console for APP (default "idp").
 This involves using sudo to change to the app service user, default $APP_USER.
 (Override by setting APP_USER).
+
+If the env variable ALLOW_CONSOLE_DB_WRITE_ACCESS is set, it will be passed
+through to the rails console.
 EOM
 }
 
@@ -28,4 +42,4 @@ fi
 
 set -x
 
-exec sudo -H -u "$APP_USER" sh -c "cd '/srv/$app/current'; bundle exec rails c"
+exec sudo -H -u "$APP_USER" env "${ENV_VARS[@]}" sh -euxc "cd '/srv/$app/current'; bundle exec rails c"
