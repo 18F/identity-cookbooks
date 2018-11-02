@@ -80,7 +80,7 @@ http {
                      '"$http_referer" "$http_user_agent" $request_time sec "$http_x_amzn_trace_id"';
 
   # Specify a key=value format useful for machine parsing
-  log_format kv 'host="$host" dest_port="$server_port" dest_ip="$server_addr" '
+  log_format kv 'hostname="$host" dest_port="$server_port" dest_ip="$server_addr" '
                   'src="$remote_addr" src_ip="$realip_remote_addr" lb_if_proxied="$lb_if_proxied" '
                   'user="$remote_user" time_local="$time_local" protocol="$server_protocol" '
                   'status="$status" bytes_out="$body_bytes_sent" '
