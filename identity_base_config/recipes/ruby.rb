@@ -28,8 +28,8 @@ end
 
 # New Relic wants its proxy hostname and port separated. Our provision script
 # leaves those in files in /etc/login.gov/info.
-global_env_vars['NEW_RELIC_PROXY_HOST'] = read_env_file('/etc/login.gov/info/proxy_server')
-global_env_vars['NEW_RELIC_PROXY_PORT'] = read_env_file('/etc/login.gov/info/proxy_server')
+global_env_vars['NEW_RELIC_PROXY_HOST'] = node.fetch('identity_shared_attributes').fetch('proxy_server')
+global_env_vars['NEW_RELIC_PROXY_PORT'] = node.fetch('identity_shared_attributes').fetch('proxy_port')
 
 # hack to set all the env variables from /etc/environment such as PATH and
 # RAILS_ENV for all subprocesses during this chef run
