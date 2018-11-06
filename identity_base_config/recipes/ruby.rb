@@ -22,8 +22,8 @@ global_env_vars = {
 # Set proxy environment variables if present in Chef config
 ['http_proxy', 'https_proxy', 'no_proxy'].each do |proxy_variable|
   if Chef::Config.fetch(proxy_variable)
-    Chef::Log.warn("Setting #{proxy_variable} to #{Chef::Config.fetch(proxy_variable)}")
-    global_env_vars[proxy_variable] = Chef::Config.fetch(proxy_variable)
+    Chef::Log.warn("Setting #{proxy_variable} to #{Chef::Config[proxy_variable]}")
+    global_env_vars[proxy_variable] = Chef::Config[proxy_variable]
   end
 end
 
