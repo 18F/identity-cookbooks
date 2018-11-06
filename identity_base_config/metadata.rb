@@ -9,3 +9,5 @@ chef_version '>= 13.0' if respond_to?(:chef_version)
 
 issues_url 'https://github.com/18F/identity-cookbooks/issues'
 source_url 'https://github.com/18F/identity-cookbooks'
+
+depends 'identity_shared_attributes'

@@ -91,7 +91,7 @@ template "#{nginx_path}/conf/nginx.conf" do
       # dynamically compute passenger root at converge using rbenv
       shell_out!(%w{rbenv exec passenger-config --root}).stdout
     },
-    ruby_path: node.fetch('identity-ruby').fetch('rbenv_root') + '/shims/ruby',
+    ruby_path: node.fetch(:identity_shared_attributes).fetch(:rbenv_root) + '/shims/ruby',
     :passenger => node[:passenger][:production],
     :pidfile => "/var/run/nginx.pid",
     :passenger_user => node[:passenger][:production][:user]
