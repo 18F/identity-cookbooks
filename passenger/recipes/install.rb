@@ -3,7 +3,7 @@
 # Recipe:: install
 
 gem_package "passenger/system" do
-  gem_binary (node.fetch('identity-ruby').fetch('rbenv_root') + '/shims/gem')
+  gem_binary (node.fetch(:identity_shared_attributes).fetch(:rbenv_root) + '/shims/gem')
   package_name 'passenger'
   version node[:passenger][:production][:version]
   notifies :run, 'execute[rbenv rehash]', :immediately
