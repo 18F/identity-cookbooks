@@ -1,6 +1,5 @@
 # Ruby environment / installation
-
-rbenv_root = node.fetch('identity-ruby').fetch('rbenv_root')
+rbenv_root = node.fetch('identity_shared_attributes').fetch('rbenv_root')
 
 # sanity checks that identity-ruby correctly installed ruby in the base AMI
 unless File.exist?(rbenv_root)
@@ -20,14 +19,17 @@ global_env_vars = {
   'RACK_ENV' => 'production',
 }
 
-# Set proxy environment variables if present in attributes
-if node.fetch('login_dot_gov').fetch('proxy_server')
-  global_env_vars['http_proxy']           = node.fetch('login_dot_gov').fetch('http_proxy')
-  global_env_vars['https_proxy']          = node.fetch('login_dot_gov').fetch('https_proxy')
-  global_env_vars['no_proxy']             = node.fetch('login_dot_gov').fetch('no_proxy')
-  global_env_vars['NEW_RELIC_PROXY_HOST'] = node.fetch('login_dot_gov').fetch('proxy_server')
-  global_env_vars['NEW_RELIC_PROXY_PORT'] = node.fetch('login_dot_gov').fetch('proxy_port')
+# Set proxy environment variables if present in Chef config
+['http_proxy', 'https_proxy', 'no_proxy'].each do |proxy_variable|
+  if Chef::Config.fetch(proxy_variable)
+    global_env_vars[proxy_variable] = Chef::Config[proxy_variable]
+  end
 end
+
+# New Relic wants its proxy hostname and port separated. Our provision script
+# leaves those in files in /etc/login.gov/info.
+global_env_vars['NEW_RELIC_PROXY_HOST'] = node.fetch('identity_shared_attributes').fetch('proxy_server')
+global_env_vars['NEW_RELIC_PROXY_PORT'] = node.fetch('identity_shared_attributes').fetch('proxy_port')
 
 # hack to set all the env variables from /etc/environment such as PATH and
 # RAILS_ENV for all subprocesses during this chef run
