@@ -2,15 +2,15 @@
 rbenv_root = node.fetch('identity_shared_attributes').fetch('rbenv_root')
 
 # sanity checks that identity-ruby correctly installed ruby in the base AMI
-unless File.exist?(rbenv_root)
-  raise "Cannot find rbenv_root at #{rbenv_root.inspect} -- was it created in the base AMI?"
-end
-unless File.exist?(rbenv_root + '/shims/ruby')
-  raise "Cannot find ruby shim in rbenv_root under #{rbenv_root.inspect} -- was it created in the base AMI?"
-end
-unless File.exist?(rbenv_root + '/shims/gem')
-  raise "Cannot find gem shim in rbenv_root under #{rbenv_root.inspect} -- was it created in the base AMI?"
-end
+# unless File.exist?(rbenv_root)
+#   raise "Cannot find rbenv_root at #{rbenv_root.inspect} -- was it created in the base AMI?"
+# end
+# unless File.exist?(rbenv_root + '/shims/ruby')
+#   raise "Cannot find ruby shim in rbenv_root under #{rbenv_root.inspect} -- was it created in the base AMI?"
+# end
+# unless File.exist?(rbenv_root + '/shims/gem')
+#   raise "Cannot find gem shim in rbenv_root under #{rbenv_root.inspect} -- was it created in the base AMI?"
+# end
 
 global_env_vars = {
   'RBENV_ROOT' => rbenv_root,
