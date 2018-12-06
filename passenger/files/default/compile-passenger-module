@@ -88,9 +88,9 @@ echo "PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR: '$PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR
 # Don't try to download the library from S3
 export PASSENGER_DOWNLOAD_NATIVE_SUPPORT_BINARY=0
 
-echo debugging the output of $gem_binary contents passenger
-
-run env RBENV_VERSION="$global_ruby" $gem_binary contents passenger
+echo "Counting passenger gem contents for debugging. This should discover"
+echo "about 4K files if the passenger gem is successfully found."
+run env RBENV_VERSION="$global_ruby" $gem_binary contents passenger | wc -l
 
 echo "Using ruby '$global_ruby' to find passenger-config"
 
