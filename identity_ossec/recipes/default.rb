@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: identity-ossec
+# Cookbook Name:: identity_ossec
 # Recipe:: default
 #
 # Copyright 2017, YOUR_COMPANY_NAME

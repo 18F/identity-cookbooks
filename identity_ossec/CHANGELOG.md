@@ -1,9 +1,9 @@
-# identity-ossec CHANGELOG
+# identity_ossec CHANGELOG
 
-This file is used to list changes made in each version of the identity-ossec cookbook.
+This file is used to list changes made in each version of the identity_ossec cookbook.
 
 ## 0.1.0
-- [your_name] - Initial release of identity-ossec
+- [your_name] - Initial release of identity_ossec
 
 - - -
 Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.
