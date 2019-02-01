@@ -81,8 +81,8 @@ default['ossec']['conf']['all']['rules']['include'] = [
 
 default['ossec']['conf']['all']['syscheck']['frequency'] = 21600
 default['ossec']['conf']['all']['syscheck']['directories'] = [
-  { '@check_all' => true, 'content' => '/etc,/usr/bin,/usr/sbin' },
-  { '@check_all' => true, 'content' => '/bin,/sbin' }
+  { '@realtime' => true, '@check_all' => true, 'content' => '/etc,/usr/bin,/usr/sbin' },
+  { '@realtime' => true, '@check_all' => true, 'content' => '/bin,/sbin' }
 ]
 
 default['ossec']['conf']['all']['syscheck']['ignore'] = [
