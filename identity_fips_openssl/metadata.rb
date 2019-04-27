@@ -4,10 +4,10 @@ maintainer_email 'identity-devops@login.gov'
 license 'All Rights Reserved'
 description 'FIPS OpenSSL module compilation'
 long_description 'Compiles and installs the OpenSSL FIPS module'
-version '0.1.0'
+version '0.2.0'
 chef_version '>= 13.0' if respond_to?(:chef_version)
 
-depends 'identity_shared_attributes', '~> 0.1'
+depends 'identity_shared_attributes', '~> 0.2'
 
 # The `source_url` points to the development repository for this cookbook.  A
 # `View Source` link will be displayed on this cookbook's page when uploaded to
