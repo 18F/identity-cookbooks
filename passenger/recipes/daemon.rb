@@ -68,11 +68,19 @@ cookbook_file "#{nginx_path}/compile-passenger-module" do
   sensitive true # not actually sensitive, but verbose
 end
 
+module_sentinel_file = "#{native_support_dir}/modules-compile.txt"
+
 execute 'compile passenger modules for all available ruby versions' do
   command %W[#{nginx_path}/compile-passenger-module ALL]
   environment(
     'PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR' => native_support_dir,
   )
+  not_if { File.exist?(module_sentinel_file) }
+end
+
+file module_sentinel_file do
+  content "#{Time.now.utc}\n"
+  action :create_if_missing
 end
 
 cookbook_file "#{nginx_path}/conf/status-map.conf" do
