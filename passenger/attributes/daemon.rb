@@ -9,9 +9,10 @@ default[:passenger][:production][:log_path] = '/var/log/nginx'
 default[:passenger][:production][:native_support_dir] = node.fetch(:passenger).fetch(:production).fetch(:path) + '/passenger-native-support'
 
 # Tune these for your environment, see:
-# http://www.modrails.com/documentation/Users%20guide%20Nginx.html#_resource_control_and_optimization_options
+# https://www.phusionpassenger.com/library/config/nginx/optimization
+# Keep max_pool_size and min_instances the same to create a fixed process pool
 default[:passenger][:production][:max_pool_size] = node.fetch('cpu').fetch('total') * 2
-default[:passenger][:production][:min_instances] = node.fetch('cpu').fetch('total')
+default[:passenger][:production][:min_instances] = node.fetch('cpu').fetch('total') * 2
 default[:passenger][:production][:pool_idle_time] = 0
 default[:passenger][:production][:max_instances_per_app] = 0
 default[:passenger][:production][:limit_connections] = true
