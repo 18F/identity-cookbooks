@@ -17,6 +17,9 @@ http {
   passenger_ruby <%= @ruby_path %>;
   passenger_show_version_in_header off;
   passenger_user <%= @passenger_user %>;
+<% @passenger[:pre_start].each do |url| %>
+  passenger_pre_start <%= url %>;
+<% end %>
 
   include mime.types;
   default_type application/octet-stream;
@@ -101,7 +104,3 @@ http {
 
   include sites.d/*.conf;
 }
-
-<% @passenger[:pre_start].each do |url| %>
-  passenger_pre_start <%= url %>;
-<% end %>
