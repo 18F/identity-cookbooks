@@ -14,7 +14,7 @@ nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
 bash "install passenger/nginx" do
   code <<-EOH
   set -eux
-  rbenv exec passenger-install-nginx-module --auto --auto-download --prefix="#{nginx_path}" --extra-configure-flags="#{node[:passenger][:production][:configure_flags]}"
+  rbenv exec passenger-install-nginx-module --auto --auto-download --languages ruby --prefix="#{nginx_path}" --extra-configure-flags="#{node[:passenger][:production][:configure_flags]}"
   rbenv rehash
   EOH
   not_if "test -e #{nginx_path}/sbin/nginx"
