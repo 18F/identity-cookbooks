@@ -42,4 +42,9 @@ default[:passenger][:production][:pre_start] = []
 
 default[:passenger][:production][:sendfile] = true
 default[:passenger][:production][:tcp_nopush] = false
+
+# Set worker processes to number of CPU cores until benchmarking shows that we
+# should do otherwise. See:
+# http://nginx.org/en/docs/ngx_core_module.html#worker_processes
+default[:passenger][:production][:worker_processes] = node.fetch('cpu').fetch('total')
 default[:passenger][:production][:worker_connections] = 1024
