@@ -38,7 +38,7 @@ default[:passenger][:production][:max_instances_per_app] = 0
 default[:passenger][:production][:pool_idle_time] = 0
 
 # a list of URL's to pre-start.
-default[:passenger][:production][:pre_start] = []
+default[:passenger][:production][:pre_start] = ['https://localhost']
 
 default[:passenger][:production][:sendfile] = true
 default[:passenger][:production][:tcp_nopush] = false
