@@ -2,7 +2,6 @@
 set -eu
 
 REPO_DIR=/etc/login.gov/repos
-ASG_SENTINEL=/etc/login.gov/info/auto-scaled
 
 usage() {
     cat >&2 <<EOM
@@ -79,7 +78,6 @@ chef_run_client() {
 chef_run_private() {
     if ! [ -d "$REPO_DIR" ]; then
         echo >&2 "error: $REPO_DIR does not exist"
-        echo >&2 "is this an auto scaled instance?"
         return 1
     fi
 
@@ -91,17 +89,11 @@ chef_run_private() {
 }
 
 chef_run_main() {
-    if [ -e "$ASG_SENTINEL" ]; then
-        (
-        berks_vendor_as_needed "$REPO_DIR/identity-devops" "kitchen"
-        )
+    (
+    berks_vendor_as_needed "$REPO_DIR/identity-devops" "kitchen"
+    )
 
-        chef_run_client "$REPO_DIR/identity-devops/kitchen/chef-client.rb" "$@"
-    else
-        echo >&2 "Instance not auto scaled, running against chef server"
-        set -x
-        exec chef-client "$@"
-    fi
+    chef_run_client "$REPO_DIR/identity-devops/kitchen/chef-client.rb" "$@"
 }
 
 if [ $# -lt 1 ]; then
