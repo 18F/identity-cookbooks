@@ -89,7 +89,7 @@ template "#{nginx_path}/conf/nginx.conf" do
     :log_path => log_path,
     passenger_root: lazy {
       # dynamically compute passenger root at converge using rbenv
-      shell_out!(%w{rbenv exec passenger-config --root}).stdout
+      shell_out!(%w{rbenv exec passenger-config --root}).stdout.chomp
     },
     ruby_path: node.fetch(:identity_shared_attributes).fetch(:rbenv_root) + '/shims/ruby',
     :passenger => node[:passenger][:production],
