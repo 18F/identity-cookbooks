@@ -14,7 +14,7 @@ nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
 bash "install passenger/nginx" do
   code <<-EOH
   set -eux
-  rbenv exec passenger-install-nginx-module --auto --auto-download --prefix="#{nginx_path}" --extra-configure-flags="#{node[:passenger][:production][:configure_flags]}"
+  rbenv exec passenger-install-nginx-module --auto --auto-download --languages ruby --prefix="#{nginx_path}" --extra-configure-flags="#{node[:passenger][:production][:configure_flags]}"
   rbenv rehash
   EOH
   not_if "test -e #{nginx_path}/sbin/nginx"
@@ -89,7 +89,7 @@ template "#{nginx_path}/conf/nginx.conf" do
     :log_path => log_path,
     passenger_root: lazy {
       # dynamically compute passenger root at converge using rbenv
-      shell_out!(%w{rbenv exec passenger-config --root}).stdout
+      shell_out!(%w{rbenv exec passenger-config --root}).stdout.chomp
     },
     ruby_path: node.fetch(:identity_shared_attributes).fetch(:rbenv_root) + '/shims/ruby',
     :passenger => node[:passenger][:production],

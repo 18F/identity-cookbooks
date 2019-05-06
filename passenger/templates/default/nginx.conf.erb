@@ -1,5 +1,5 @@
 #user  nobody;
-worker_processes  5;
+worker_processes  <%= @passenger[:worker_processes] %>;
 pid <%= @pidfile %>;
 
 events {
@@ -17,6 +17,9 @@ http {
   passenger_ruby <%= @ruby_path %>;
   passenger_show_version_in_header off;
   passenger_user <%= @passenger_user %>;
+<% @passenger[:pre_start].each do |url| %>
+  passenger_pre_start <%= url %>;
+<% end %>
 
   include mime.types;
   default_type application/octet-stream;
@@ -89,7 +92,7 @@ http {
                   'http_x_forwarded_for="$http_x_forwarded_for" uri_query="$query_string" '
                   'uri_path="$uri" http_method="$request_method" '
                   'response_time="$upstream_response_time" cookie="$http_cookie" '
-                  'request_time="$request_time request="$request" '
+                  'request_time="$request_time" request="$request" '
                   'http_x_amzn_trace_id="http_x_amzn_trace_id"';
 
   access_log <%= @log_path or raise "no @log_path" %>/access.log kv;
@@ -101,7 +104,3 @@ http {
 
   include sites.d/*.conf;
 }
-
-<% @passenger[:pre_start].each do |url| %>
-  passenger_pre_start <%= url %>;
-<% end %>
