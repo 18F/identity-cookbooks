@@ -4,8 +4,12 @@
 
 include_recipe "passenger::install"
 
+# package "curl"
+# ['libcurl4-openssl-dev', 'libpcre3-dev'].each do |pkg|
+#   package pkg
+# end
 package "curl"
-['libcurl4-openssl-dev', 'libpcre3-dev'].each do |pkg|
+['libcurl4-gnutls-dev', 'libcurl4-openssl-dev', 'libgnutls28-dev'].each do |pkg|
   package pkg
 end
 
