@@ -9,7 +9,7 @@ include_recipe "passenger::install"
 #   package pkg
 # end
 package "curl"
-['libcurl4-openssl-dev'].each do |pkg|
+['libcurl4-gnutls-dev'].each do |pkg|
   package pkg
 end
 
