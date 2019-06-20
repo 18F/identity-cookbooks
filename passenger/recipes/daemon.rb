@@ -4,11 +4,11 @@
 
 include_recipe "passenger::install"
 
-case node[:platform_version].to_i
-when '16'
+case node[:platform_version]
+when '16.04'
   package 'libcurl4-openssl-dev'
   package 'libprcre3-dev'
-when '18'
+when '18.04'
   package 'libcurl4-gunutls-dev'
 end
 # package "curl"
