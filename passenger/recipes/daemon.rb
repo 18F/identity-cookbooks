@@ -9,7 +9,7 @@ when '16.04'
   package 'libcurl4-openssl-dev'
   package 'libprcre3-dev'
 when '18.04'
-  package 'libcurl4-gunutls-dev'
+  package 'libcurl4-gnutls-dev'
 end
 # package "curl"
 # ['libcurl4-openssl-dev', 'libpcre3-dev'].each do |pkg|
