@@ -7,7 +7,7 @@ include_recipe "passenger::install"
 case node[:platform_version]
 when '16.04'
   package 'libcurl4-openssl-dev'
-  package 'libprcre3-dev'
+  package 'libpcre3-dev'
 when '18.04'
   package 'libcurl4-gnutls-dev'
 end
