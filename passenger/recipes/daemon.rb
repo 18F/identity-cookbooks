@@ -11,14 +11,6 @@ when '16.04'
 when '18.04'
   package 'libcurl4-gnutls-dev'
 end
-# package "curl"
-# ['libcurl4-openssl-dev', 'libpcre3-dev'].each do |pkg|
-#   package pkg
-# end
-# package "curl"
-# ['libcurl4-gnutls-dev'].each do |pkg|
-#   package pkg
-# end
 
 nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
 
