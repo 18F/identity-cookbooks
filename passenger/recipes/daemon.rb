@@ -4,6 +4,8 @@
 
 include_recipe "passenger::install"
 
+package "curl"
+
 case node[:platform_version]
 when '16.04'
   package 'libcurl4-openssl-dev'
