@@ -5,8 +5,13 @@
 include_recipe "passenger::install"
 
 package "curl"
-['libcurl4-openssl-dev', 'libpcre3-dev'].each do |pkg|
-  package pkg
+
+case node[:platform_version]
+when '16.04'
+  package 'libcurl4-openssl-dev'
+  package 'libpcre3-dev'
+when '18.04'
+  package 'libcurl4-gnutls-dev'
 end
 
 nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
