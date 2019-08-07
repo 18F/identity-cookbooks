@@ -100,7 +100,7 @@ action :create do
   execute 'assign eips' do
     command ['aws-grab-static-eip'] + assign_opts
     notifies :run, 'execute[sleep after eip assignment]', :immediately
-    not_if { ::File.exist?(sentinel_file) }
+    not_if { ::File.exist?(new_resource.sentinel_file) }
     live_stream true
 
     # Retry assignment a few times. We can fail the first time if we hit the
@@ -113,7 +113,7 @@ action :create do
   # sleep after assigning an EIP so that we don't attempt to do stuff involving
   # the network during the cutover
   execute 'sleep after eip assignment' do
-    command "touch '#{sentinel_file}' && sleep 20"
+    command "touch '#{new_resource.sentinel_file}' && sleep 20"
     action :nothing
   end
 end
