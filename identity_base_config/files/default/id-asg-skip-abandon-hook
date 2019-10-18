@@ -1,0 +1,13 @@
+#!/bin/bash
+set -euo pipefail
+
+# Prevent provision.sh from completing the ASG lifecycle hook with ABANDON when
+# bootstrapping / chef provisioning fails.
+
+if [ "$(id -u)" -ne 0 ]; then
+    set -x
+    exec sudo "$0" "$@"
+fi
+
+set -x
+touch /etc/login.gov/info/skip_abandon_hook
