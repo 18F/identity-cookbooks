@@ -1,7 +1,7 @@
 # Ruby environment / installation
 rbenv_root = node.fetch('identity_shared_attributes').fetch('rbenv_root')
 
-# sanity checks that identity-ruby correctly installed ruby in the base AMI
+# sanity checks that identity_ruby correctly installed ruby
 unless File.exist?(rbenv_root)
   raise "Cannot find rbenv_root at #{rbenv_root.inspect} -- was it created in the base AMI?"
 end
