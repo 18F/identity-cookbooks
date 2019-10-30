@@ -19,7 +19,7 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[identity-ruby::default]
+      - recipe[identity_ruby::default]
     verifier:
       inspec_tests:
         - test/smoke/default

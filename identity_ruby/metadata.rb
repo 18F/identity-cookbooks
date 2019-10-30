@@ -1,4 +1,4 @@
-name 'identity-ruby'
+name 'identity_ruby'
 maintainer 'Login.gov team'
 maintainer_email 'identity-devops@login.gov'
 license 'All Rights Reserved'
@@ -13,4 +13,4 @@ depends 'ruby_build', '~> 1.2'
 # `View Source` link will be displayed on this cookbook's page when uploaded to
 # a Supermarket.
 #
-# source_url 'https://github.com/<insert_org_here>/identity-ruby'
+# source_url 'https://github.com/<insert_org_here>/identity_ruby'

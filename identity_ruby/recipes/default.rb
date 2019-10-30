@@ -1,6 +1,6 @@
 
 # Use rbenv root directory from attributes
-rbenv_root = node.fetch('identity-ruby').fetch('rbenv_root')
+rbenv_root = node.fetch('identity_ruby').fetch('rbenv_root')
 
 # Set RBENV_ROOT env variable for this chef run. The recipe caller is expected
 # to set RBENV_ROOT in /etc/environment and to add $RBENV_ROOT/shims to PATH.
@@ -27,7 +27,7 @@ openssl_srcpath = "#{cache_dir}/openssl-#{node.fetch('login_dot_gov').fetch('ope
 ENV['RUBY_CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
 
   
-node.fetch('identity-ruby').fetch('ruby_versions').each do |version|
+node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
   ruby_build_ruby version do
     prefix_path "#{rbenv_root}/builds/#{version}"
     notifies :run, 'execute[rbenv rehash]'
@@ -64,9 +64,9 @@ node.fetch('identity-ruby').fetch('ruby_versions').each do |version|
 end
 
 # set default rbenv ruby version if provided
-if node.fetch('identity-ruby')['default_ruby_version']
+if node.fetch('identity_ruby')['default_ruby_version']
   file "#{rbenv_root}/version" do
-    content node.fetch('identity-ruby').fetch('default_ruby_version') + "\n"
+    content node.fetch('identity_ruby').fetch('default_ruby_version') + "\n"
   end
 end
 

@@ -1,12 +1,12 @@
 #
-# Cookbook:: identity-ruby
+# Cookbook:: identity_ruby
 # Spec:: default
 #
 # Copyright:: 2018, The Authors, All Rights Reserved.
 
 require 'spec_helper'
 
-describe 'identity-ruby::default' do
+describe 'identity_ruby::default' do
   context 'When all attributes are default, on an Ubuntu 18.04' do
     let(:chef_run) do
       # for a complete list of available platforms and versions see:
