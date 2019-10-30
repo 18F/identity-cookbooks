@@ -1,16 +1,16 @@
 # thanks to https://github.com/asynchrony/chef-openssl-fips for the blunt of the work
 
-cache_dir = node.fetch(:identity_shared_attributes).fetch('cache_dir')
+cache_dir = node.fetch('identity_fips_openssl').fetch('cache_dir')
 directory cache_dir do
   action :create
 end
 
-src_dirpath  = "#{cache_dir}/openssl-fips-#{node[:identity_shared_attributes]['fips']['version']}"
+src_dirpath  = "#{cache_dir}/openssl-fips-#{node['identity_fips_openssl']['fips']['version']}"
 src_filepath  = "#{src_dirpath}.tar.gz"
 
-remote_file node[:identity_shared_attributes]['fips']['url'] do
-  source node[:identity_shared_attributes]['fips']['url']
-  checksum node[:identity_shared_attributes]['fips']['checksum']
+remote_file node['identity_fips_openssl']['fips']['url'] do
+  source node['identity_fips_openssl']['fips']['url']
+  checksum node['identity_fips_openssl']['fips']['checksum']
   path src_filepath
   backup false
 end
@@ -23,7 +23,7 @@ execute 'unarchive_fips' do
   not_if { ::File.directory?(src_dirpath) }
 end
 
-fips_dirpath = "#{cache_dir}/openssl-fipsmodule-#{node[:identity_shared_attributes]['fips']['version']}"
+fips_dirpath = "#{cache_dir}/openssl-fipsmodule-#{node['identity_fips_openssl']['fips']['version']}"
 
 execute 'compile_fips_source' do
   cwd src_dirpath
@@ -33,11 +33,11 @@ execute 'compile_fips_source' do
   not_if { ::File.directory?(fips_dirpath) }
 end
 
-src_dirpath = "#{cache_dir}/openssl-#{node[:identity_shared_attributes]['openssl']['version']}"
+src_dirpath = "#{cache_dir}/openssl-#{node['identity_fips_openssl']['openssl']['version']}"
 src_filepath = "#{src_dirpath}.tar.gz"
-remote_file node[:identity_shared_attributes]['openssl']['url'] do
-  source node[:identity_shared_attributes]['openssl']['url']
-  checksum node[:identity_shared_attributes]['openssl']['checksum']
+remote_file node['identity_fips_openssl']['openssl']['url'] do
+  source node['identity_fips_openssl']['openssl']['url']
+  checksum node['identity_fips_openssl']['openssl']['checksum']
   path src_filepath
   backup false
 end
@@ -48,14 +48,14 @@ execute 'unarchive_openssl' do
   not_if { ::File.directory?(src_dirpath) }
 end
 
-configure_flags = node[:identity_shared_attributes]['openssl']['configure_flags'].map { |x| x }
-configure_flags << "--prefix=#{node[:identity_shared_attributes]['openssl']['prefix']}"
+configure_flags = node['identity_fips_openssl']['openssl']['configure_flags'].map { |x| x }
+configure_flags << "--prefix=#{node['identity_fips_openssl']['openssl']['prefix']}"
 configure_flags << "fips" << "--with-fipsdir=#{fips_dirpath}"
 
 execute 'compile_openssl_source' do
   cwd  src_dirpath
   command "./config #{configure_flags.join(' ')} && make && make install"
-  not_if { ::File.directory?(node[:identity_shared_attributes]['openssl']['prefix']) }
+  not_if { ::File.directory?(node['identity_fips_openssl']['openssl']['prefix']) }
 end
 
 #record binary location for chef deployment to access
@@ -68,7 +68,7 @@ directory '/etc/login.gov/info' do
 end
 
 file '/etc/login.gov/info/openssl_binary' do
-  content "#{node[:identity_shared_attributes]['openssl']['prefix']}/bin/openssl\n"
+  content "#{node['identity_fips_openssl']['openssl']['prefix']}/bin/openssl\n"
   mode '0644'
   owner 'root'
   group 'root'
