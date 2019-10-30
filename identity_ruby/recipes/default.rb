@@ -19,8 +19,8 @@ link "#{rbenv_root}/versions" do
   to '/opt/ruby_build/builds'
 end
 
-cache_dir = node.fetch('login_dot_gov').fetch('cache_dir')
-openssl_srcpath = "#{cache_dir}/openssl-#{node.fetch('login_dot_gov').fetch('openssl').fetch('version')}"
+cache_dir = node.fetch(:identity_shared_attributes).fetch('cache_dir')
+openssl_srcpath = "#{cache_dir}/openssl-#{node.fetch(:identity_shared_attributes).fetch('openssl').fetch('version')}"
 # We would use RUBY_CONFIGURE_OPTS except for
 # https://github.com/poise/poise-ruby-build/issues/9
 
