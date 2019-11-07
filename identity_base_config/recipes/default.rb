@@ -64,19 +64,16 @@ cookbook_file '/usr/local/bin/id-chef-client' do
   mode '0755'
 end
 
-cookbook_file '/usr/local/bin/id-git' do
-  source 'id-git'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
-
-cookbook_file '/usr/local/bin/id-rails-console' do
-  source 'id-rails-console'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
+template "/usr/local/bin/id-rails-console" do
+    source "id-rails-console.erb"
+    owner 'root'
+    group 'root'
+    mode '0755'
+    variables ({
+      :webhook => ConfigLoader.load_config(node, "slackwebhook"),
+      :channel => ConfigLoader.load_config(node, "slackchannel"),
+    })
+  end
 
 cookbook_file '/usr/local/bin/git-with-key' do
   source 'git-with-key'
