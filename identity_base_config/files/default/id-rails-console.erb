@@ -19,12 +19,15 @@ usage() {
     cat >&2 <<EOM
 usage: $(basename "$0") [APP]
 
-Run a rails console for APP (default "idp").
+Run a Rails console for APP (default "idp"). 
+
 This involves using sudo to change to the app service user, default $APP_USER.
-(Override by setting APP_USER).
+(Override by setting APP_USER). You will be prompted to provide a justification
+for creating this console, which will be recorded in the <%= @channel %>
+channel in Slack.
 
 If the env variable ALLOW_CONSOLE_DB_WRITE_ACCESS is set, it will be passed
-through to the rails console.
+through to the Rails console.
 EOM
 }
 
@@ -42,4 +45,17 @@ fi
 
 set -x
 
+while true; do
+    read -r -p "Please provide an explanation for this Rails console: " USE_CASE
+    if [ ! -z "$USE_CASE" ]; then
+        return
+    fi
+done
+
 exec sudo -H -u "$APP_USER" env "${ENV_VARS[@]}" sh -euxc "cd '/srv/$app/current'; bundle exec rails c"
+
+CURL='curl -X POST --data-urlencode '
+TEXT=":rails:*rails console*:rails: for \`$(logname)\` on \`$(hostname)\`: \"${USE_CASE}\""
+PAYLOAD="'payload={\"channel\": \"<%= @channel %>\", \"username\": \"infra-rails\", \"text\": \"${TEXT}\", \"icon_emoji\": \":dopetopus:\"}'"
+bash -c "${CURL} ${PAYLOAD} <%= @webhook %>"
+
