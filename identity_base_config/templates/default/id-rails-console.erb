@@ -46,7 +46,7 @@ fi
 while true; do
     read -r -p "Please provide an explanation for this Rails console: " USE_CASE
     if [ ! -z "$USE_CASE" ]; then
-        return
+        break
     fi
 done
 
