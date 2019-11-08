@@ -51,8 +51,8 @@ while true; do
 done
 
 CURL='curl -X POST --data-urlencode '
-TEXT=":rails:*rails console*:rails: for \`$(logname)\` on \`$(hostname)\`: \"${USE_CASE}\""
-PAYLOAD="'payload={\"channel\": \"<%= @channel %>\", \"username\": \"infra-rails\", \"text\": \"${TEXT}\", \"icon_emoji\": \":dopetopus:\"}'"
+TEXT=":rails:*rails console*:rails: for \`$(logname)\` on \`$(hostname)\`\nuse case: \\\"${USE_CASE}\\\""
+PAYLOAD="'payload={\"channel\": \"<%= @channel %>\", \"username\": \"id-rails-console\", \"text\": \"${TEXT}\", \"icon_emoji\": \":dopetopus:\"}'"
 bash -c "${CURL} ${PAYLOAD} <%= @webhook %>"
 
 set -x
