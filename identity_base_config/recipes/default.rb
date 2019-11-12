@@ -64,6 +64,13 @@ cookbook_file '/usr/local/bin/id-chef-client' do
   mode '0755'
 end
 
+cookbook_file '/usr/local/bin/id-git' do
+  source 'id-git'
+  owner 'root'
+  group 'root'
+  mode '0755'
+end
+
 # download Slack hook/channel files for id-rails-console
 %w(slackwebhook slackchannel).each do |f|
   file "/etc/login.gov/keys/#{f}" do
