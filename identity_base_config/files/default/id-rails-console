@@ -51,6 +51,7 @@ while true; do
     fi
 done
 
+USE_CASE=$(printf '%q\n' "${USE_CASE}" | sed 's/\$//')
 CHANNEL=$(cat /etc/login.gov/keys/slackchannel) || ((missing_keys++))
 WEBHOOK=$(cat /etc/login.gov/keys/slackwebhook) || ((missing_keys++))
 if [ ${missing_keys} -gt 0 ]; then
@@ -60,7 +61,7 @@ fi
 
 TEXT=":rails:*rails console*:rails: for \`$(logname)\` on \`$(hostname)\`\nuse case: \\\"${USE_CASE}\\\""
 PAYLOAD="'payload={\"channel\": \"${CHANNEL}\", \"username\": \"id-rails-console\", \"text\": \"${TEXT}\", \"icon_emoji\": \":dopetopus:\"}'"
-curl -X POST --data-urlencode "${PAYLOAD} ${WEBHOOK}"
+curl -X POST --data-urlencode "${PAYLOAD}" "${WEBHOOK}"
 
 set -x
 

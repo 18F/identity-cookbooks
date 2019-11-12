@@ -65,14 +65,9 @@ cookbook_file '/usr/local/bin/id-chef-client' do
 end
 
 # download Slack hook/channel files for id-rails-console
-aws_account_id = AwsMetadata.get_aws_account_id
-
-s3_secret_url = "s3://login-gov.secrets.#{aws_account_id}-us-west-2/#{node.chef_environment}/"
-
 %w(slackwebhook slackchannel).each do |f|
-  execute "download #{f} from s3" do
-    command "aws s3 cp #{s3_secret_url}#{f} /etc/login.gov/keys/"
-    not_if { ::File.exist?("/etc/login.gov/keys/#{f}") }
+  file "/etc/login.gov/keys/#{f}" do
+    content ConfigLoader.load_config(node, "#{f}")
   end
 end
 
