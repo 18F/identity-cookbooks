@@ -50,8 +50,8 @@ while true; do
         break
     fi
 done
+USE_CASE=$(echo $USE_CASE | sed 's/"/\\\"/g;s/\&/\&amp\;/g;s/</\&lt\;/g;s/>/\&gt\;/g')
 
-USE_CASE=$(printf '%q\n' "${USE_CASE}" | sed 's/\$//')
 CHANNEL=$(cat /etc/login.gov/keys/slackchannel) || ((missing_keys++))
 WEBHOOK=$(cat /etc/login.gov/keys/slackwebhook) || ((missing_keys++))
 if [ ${missing_keys} -gt 0 ]; then
@@ -59,9 +59,9 @@ if [ ${missing_keys} -gt 0 ]; then
     exit 1
 fi
 
-TEXT=":rails:*rails console*:rails: for \`$(logname)\` on \`$(hostname)\`\nuse case: \\\"${USE_CASE}\\\""
-PAYLOAD="'payload={\"channel\": \"${CHANNEL}\", \"username\": \"id-rails-console\", \"text\": \"${TEXT}\", \"icon_emoji\": \":dopetopus:\"}'"
-curl -X POST --data-urlencode "${PAYLOAD}" "${WEBHOOK}"
+TEXT=':rails: _rails console_ :rails: for `'"$(logname)"'` on `'"$(hostname)"'` :\n*'"${USE_CASE}"'*'
+PAYLOAD='payload={"channel": "'"${CHANNEL}"'", "username": "id-rails-console", "text": "'"${TEXT}"'", "icon_emoji": ":dopetopus:"}'
+curl -X POST --data-urlencode "${PAYLOAD}" $WEBHOOK
 
 set -x
 
