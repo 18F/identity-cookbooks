@@ -71,21 +71,6 @@ cookbook_file '/usr/local/bin/id-git' do
   mode '0755'
 end
 
-# download Slack hook/channel files for id-rails-console
-%w(slackwebhook slackchannel).each do |f|
-  file "/etc/login.gov/keys/#{f}" do
-    content ConfigLoader.load_config_or_nil(node, f)
-    not_if { node['config_loader']['bucket_prefix'].nil? }
-  end
-end
-
-cookbook_file '/usr/local/bin/id-rails-console' do
-  source 'id-rails-console'
-  owner 'root'
-  group 'root'
-  mode '0755'
-end
-
 cookbook_file '/usr/local/bin/git-with-key' do
   source 'git-with-key'
   owner 'root'
