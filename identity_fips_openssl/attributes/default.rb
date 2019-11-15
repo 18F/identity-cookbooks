@@ -5,5 +5,5 @@ default['identity_fips_openssl']['fips']['checksum']           = 'a3cd13d0521d22
 default['identity_fips_openssl']['openssl']['version']         = default.fetch(:identity_shared_attributes).fetch(:openssl_version)
 default['identity_fips_openssl']['openssl']['prefix']          = "/opt/openssl-#{default['identity_fips_openssl']['openssl']['version']}"
 default['identity_fips_openssl']['openssl']['url']             = "https://www.openssl.org/source/openssl-#{default['identity_fips_openssl']['openssl']['version']}.tar.gz"
-default['identity_fips_openssl']['openssl']['checksum']        = 'cabd5c9492825ce5bd23f3c3aeed6a97f8142f606d893df216411f07d1abab96'
+default['identity_fips_openssl']['openssl']['checksum']        = '14cb464efe7ac6b54799b34456bd69558a749a4931ecfd9cf9f71d7881cac7bc'
 default['identity_fips_openssl']['openssl']['configure_flags'] = %W[ shared ]
