@@ -11,4 +11,3 @@ issues_url 'https://github.com/18F/identity-cookbooks/issues'
 source_url 'https://github.com/18F/identity-cookbooks'
 
 depends 'identity_shared_attributes'
-depends 'config_loader'
