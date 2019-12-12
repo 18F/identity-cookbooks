@@ -23,3 +23,7 @@ execute 'restart_rsyslog' do
   command 'service rsyslog restart'
   action :nothing
 end
+
+apt_repository 'ossec' do
+  action :remove
+end
