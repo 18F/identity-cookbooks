@@ -1,0 +1,17 @@
+[Unit]
+Description= Automatically set EC2 instance hostname
+
+# Set the hostname after dbus is running and cloud-init gets the instance ID
+# from the metadata service, but before rsyslog starts up
+After=dbus.service cloud-config.target
+Before=rsyslog.service
+Wants=dbus.service cloud-config.target rsyslog.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/auto-set-ec2-hostname run
+StandardOutput=syslog+console
+
+[Install]
+WantedBy=multi-user.target
