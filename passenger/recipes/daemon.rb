@@ -25,6 +25,10 @@ bash "install passenger/nginx" do
   not_if "test -e #{nginx_path}/sbin/nginx"
 end
 
+execute "compile passenger agent" do
+ command "rbenv exec passenger-config compile-agent"
+end
+
 log_path = node[:passenger][:production][:log_path]
 
 directory log_path do
