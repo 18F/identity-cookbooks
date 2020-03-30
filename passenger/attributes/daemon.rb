@@ -2,11 +2,12 @@ cache_dir = node.fetch(:identity_shared_attributes).fetch(:cache_dir)
 
 openssl_version = node.fetch(:identity_shared_attributes).fetch(:openssl_version)
 openssl_srcpath = "#{cache_dir}/openssl-#{openssl_version}"
+openssl_installed_path = "/opt/openssl-#{openssl_version}"
 
 default[:passenger][:production][:path] = '/opt/nginx'
 default[:passenger][:production][:native_support_dir] = node.fetch(:passenger).fetch(:production).fetch(:path) + '/passenger-native-support'
 
-default[:passenger][:production][:configure_flags] = "--with-ipv6 --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-openssl=#{openssl_srcpath}"
+default[:passenger][:production][:configure_flags] = "--with-ipv6 --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-ld-opt=\"-L #{openssl_installed_path}/lib\" --with-cc-opt=\"-I #{openssl_installed_path}/include\""
 default[:passenger][:production][:log_path] = '/var/log/nginx'
 
 # Enable the status server on 127.0.0.1
