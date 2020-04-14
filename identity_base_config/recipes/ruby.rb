@@ -17,6 +17,8 @@ global_env_vars = {
   'PATH' => "/opt/chef/bin:#{rbenv_root}/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games",
   'RAILS_ENV' => 'production',
   'RACK_ENV' => 'production',
+  'SSL_CERT_DIR' => '/etc/ssl/certs',
+  'SSL_CERT_FILE' => '/etc/ssl/certs/ca-certificates.crt',
 }
 
 # Set proxy environment variables if present in Chef config
