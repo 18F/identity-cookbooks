@@ -26,9 +26,8 @@ end
 
 # fix up init.d directory so
 # service will start on boot
-file '/etc/init.d/ossec' do
+link '/etc/init.d/ossec' do
   action :delete
-  only_if { File.exist? '/etc/init.d/ossec' }
 end
 
 remote_file "Copy file to init.d" do
