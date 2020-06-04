@@ -24,6 +24,21 @@ execute 'restart_rsyslog' do
   action :nothing
 end
 
+# fix up init.d directory so
+# service will start on boot
+file '/etc/init.d/ossec' do
+  action :delete
+  only_if { File.exist? '/etc/init.d/ossec' }
+end
+
+remote_file "Copy file to init.d" do
+  source "file:///var/ossec/etc/init.d"
+  path "/etc/init.d/ossec"
+  owner 'root'
+  group 'root'
+  mode 0755
+end
+
 apt_repository 'ossec' do
   action :remove
 end
