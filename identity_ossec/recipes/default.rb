@@ -31,7 +31,7 @@ link '/etc/init.d/ossec' do
 end
 
 remote_file "Copy file to init.d" do
-  source "file:///var/ossec/etc/init.d"
+  source "file:///var/ossec/etc/init.d/ossec"
   path "/etc/init.d/ossec"
   owner 'root'
   group 'root'
