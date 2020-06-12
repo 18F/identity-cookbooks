@@ -9,6 +9,14 @@
 
 include_recipe 'ossec'
 
+# custom syslog_rules which removes rule 1003
+cookbook_file '/var/ossec/rules/syslog_rules.xml' do
+  source 'syslog_rules.xml'
+  owner 'root'
+  group 'ossec'
+  mode '0550'
+end
+
 execute '/var/ossec/bin/ossec-control enable client-syslog' do
   not_if "ps gaxuwww | grep ossec-csyslogd | grep -v grep"
   notifies :restart, 'service[ossec]'
