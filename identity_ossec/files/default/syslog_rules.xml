@@ -34,10 +34,11 @@
     <description>Unknown problem somewhere in the system.</description>
   </rule>
 
+  <!-- # Rule disabled 06/2020 - Triggering on logs not handled by syslog that
+       # have ligitimate lines over 2048 bytes
   <rule id="1003" level="13" maxsize="2048">
-    <!-- Override from default of 1023 -->
     <description>Non standard syslog message (message size > 2048).</description>
-  </rule>
+  </rule> -->
 
   <rule id="1004" level="5">
     <pcre2>^exiting on signal</pcre2>
