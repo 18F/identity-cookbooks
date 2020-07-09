@@ -3,4 +3,4 @@ DEPENDENCIES
     path: ../identity_shared_attributes
 
 GRAPH
-  identity_shared_attributes (0.1.0)
+  identity_shared_attributes (0.1.2)
