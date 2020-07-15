@@ -31,6 +31,12 @@ end
 global_env_vars['NEW_RELIC_PROXY_HOST'] = node.fetch('identity_shared_attributes').fetch('proxy_server')
 global_env_vars['NEW_RELIC_PROXY_PORT'] = node.fetch('identity_shared_attributes').fetch('proxy_port')
 
+# New Relic government endpoints
+global_env_vars['NEW_RELIC_HOST'] = 'gov-collector.newrelic.com'
+global_env_vars['NRIA_COLLECTOR_URL'] = 'https://gov-infra-api.newrelic.com'
+global_env_vars['NRIA_IDENTITY_URL'] = 'https://gov-identity-api.newrelic.com'
+global_env_vars['NRIA_COMMAND_CHANNEL_URL'] = "https://gov-infrastructure-command-api.newrelic.com"
+
 # hack to set all the env variables from /etc/environment such as PATH and
 # RAILS_ENV for all subprocesses during this chef run
 global_env_vars.each_pair do |key, val|
@@ -41,6 +47,7 @@ file '/etc/environment' do
   header = <<-EOM
     # Dropped off by chef
     # This is a static file (not script) used by PAM to set env variables.
+    # This file is built in identity-cookbooks/identity_base_config/ruby.rb
   EOM
   content(
     header + global_env_vars.map { |key, val| "#{key}='#{val}'" }.join("\n") \
