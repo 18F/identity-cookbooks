@@ -15,11 +15,34 @@ when '18.04'
 end
 
 nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
+nginx_version = node[:passenger][:production][:nginx][:version]
+
+directory "#{nginx_path}/src" do
+  mode 0755
+  action :create
+  recursive true
+end
+
+cookbook_file "#{nginx_path}/src/fipsmode.patch" do
+  source "fipsmode.patch"
+end
+
+# Download nginx src into #{nginx_path}/src/ and patch it to enable FIPS mode
+bash "download nginx source and patch for FIPS mode" do
+  code <<-EOH
+  cd #{nginx_path}/src
+  wget https://nginx.org/download/nginx-#{nginx_version}.tar.gz
+  tar zxpf nginx-#{nginx_version}.tar.gz
+  cd nginx-#{nginx_version}
+  patch -p1 < ../fipsmode.patch
+  EOH
+  not_if "test -d #{nginx_path}/src/nginx-#{nginx_version}"
+end
 
 bash "install passenger/nginx" do
   code <<-EOH
   set -eux
-  rbenv exec passenger-install-nginx-module --auto --auto-download --languages ruby --prefix="#{nginx_path}" --extra-configure-flags="#{node[:passenger][:production][:configure_flags]}"
+  rbenv exec passenger-install-nginx-module --auto --nginx-source-dir="#{nginx_path}/src/nginx-#{nginx_version}" --languages ruby --prefix="#{nginx_path}" --extra-configure-flags="#{node[:passenger][:production][:configure_flags]}"
   rbenv rehash
   EOH
   not_if "test -e #{nginx_path}/sbin/nginx"
