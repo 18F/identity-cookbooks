@@ -24,14 +24,17 @@ openssl_srcpath = "#{cache_dir}/openssl-#{node.fetch(:identity_shared_attributes
 # We would use RUBY_CONFIGURE_OPTS except for
 # https://github.com/poise/poise-ruby-build/issues/9
 
+ENV['CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
 ENV['RUBY_CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
 
-  
 node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
   ruby_build_ruby version do
     prefix_path "#{rbenv_root}/builds/#{version}"
     notifies :run, 'execute[rbenv rehash]'
-    environment ({'RUBY_CONFIGURE_OPTS' => "--with-openssl-dir=#{openssl_srcpath}"})
+    environment({
+      'CONFIGURE_OPTS' => "--with-openssl-dir=#{openssl_srcpath}",
+      'RUBY_CONFIGURE_OPTS' => "--with-openssl-dir=#{openssl_srcpath}"
+    })
   end
 
   # if version follow standard x.x.x version number, create alias at x.x so
