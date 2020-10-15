@@ -31,6 +31,7 @@ node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
   ruby_build_ruby version do
     prefix_path "#{rbenv_root}/builds/#{version}"
     notifies :run, 'execute[rbenv rehash]'
+    environment ({'RUBY_CONFIGURE_OPTS' => "--with-openssl-dir=#{openssl_srcpath}"})
   end
 
   # if version follow standard x.x.x version number, create alias at x.x so
