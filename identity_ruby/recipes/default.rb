@@ -28,8 +28,8 @@ ENV['CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
 ENV['RUBY_CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
 
 node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
-  ruby_build_ruby version do
-    prefix_path "#{rbenv_root}/builds/#{version}"
+  execute "build #{version} with #{openssl_srcpath}" do
+    command "/usr/local/bin/ruby-build \"#{version}\" \"/opt/ruby_build/builds/#{version}\""
     notifies :run, 'execute[rbenv rehash]'
     environment({
       'CONFIGURE_OPTS' => "--with-openssl-dir=#{openssl_srcpath}",
