@@ -19,14 +19,7 @@ link "#{rbenv_root}/versions" do
   to '/opt/ruby_build/builds'
 end
 
-cache_dir = node.fetch(:identity_shared_attributes).fetch('cache_dir')
-openssl_srcpath = "#{cache_dir}/openssl-#{node.fetch(:identity_shared_attributes).fetch(:openssl_version)}"
 openssl_path = "/opt/openssl-#{node[:identity_shared_attributes][:openssl_version]}"
-# We would use RUBY_CONFIGURE_OPTS except for
-# https://github.com/poise/poise-ruby-build/issues/9
-
-ENV['CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
-ENV['RUBY_CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
 
 node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
   execute "build #{version} with #{openssl_path}" do
