@@ -58,6 +58,12 @@ execute 'compile_openssl_source' do
   not_if { ::File.directory?(node['identity_fips_openssl']['openssl']['prefix']) }
 end
 
+execute 'link certs dir' do
+  cwd node['identity_fips_openssl']['openssl']['prefix']
+  command "rmdir ssl/certs ; ln -s /usr/lib/ssl/certs ssl/certs"
+  not_if { ::File.symlink?("#{node['identity_fips_openssl']['openssl']['prefix']}/ssl/certs")}
+end
+
 #record binary location for chef deployment to access
 directory '/etc/login.gov/info' do
   owner 'root'
