@@ -19,18 +19,17 @@ link "#{rbenv_root}/versions" do
   to '/opt/ruby_build/builds'
 end
 
-openssl_path = "/opt/openssl-#{node[:identity_shared_attributes][:openssl_version]}"
+cache_dir = node.fetch(:identity_shared_attributes).fetch('cache_dir')
+openssl_srcpath = "#{cache_dir}/openssl-#{node.fetch(:identity_shared_attributes).fetch(:openssl_version)}"
+# We would use RUBY_CONFIGURE_OPTS except for
+# https://github.com/poise/poise-ruby-build/issues/9
+
+ENV['RUBY_CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
 
 node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
-  execute "build #{version} with #{openssl_path}" do
-    command "/usr/local/bin/ruby-build \"#{version}\" \"/opt/ruby_build/builds/#{version}\""
+  ruby_build_ruby version do
+    prefix_path "#{rbenv_root}/builds/#{version}"
     notifies :run, 'execute[rbenv rehash]'
-    environment({
-      'CONFIGURE_OPTS' => "--with-openssl-dir=#{openssl_path}",
-      'RUBY_CONFIGURE_OPTS' => "--with-openssl-dir=#{openssl_path}",
-      'LDFLAGS' => "-L#{openssl_path}/lib",
-      'CPPFLAGS' => "-I#{openssl_path}/include"
-    })
   end
 
   # if version follow standard x.x.x version number, create alias at x.x so
