@@ -26,7 +26,6 @@ openssl_srcpath = "#{cache_dir}/openssl-#{node.fetch(:identity_shared_attributes
 
 ENV['RUBY_CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
 
-  
 node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
   ruby_build_ruby version do
     prefix_path "#{rbenv_root}/builds/#{version}"
