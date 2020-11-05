@@ -5,14 +5,7 @@
 include_recipe "passenger::install"
 
 package "curl"
-
-case node[:platform_version]
-when '16.04'
-  package 'libcurl4-openssl-dev'
-  package 'libpcre3-dev'
-when '18.04'
-  package 'libcurl4-gnutls-dev'
-end
+package 'libcurl4-gnutls-dev'
 
 nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
 nginx_version = node[:passenger][:production][:nginx][:version]
@@ -130,16 +123,13 @@ template "#{nginx_path}/conf/nginx.conf" do
   )
 end
 
-template "/etc/init.d/passenger" do
-  source "passenger.init.erb"
+template "/lib/systemd/system/nginx.service" do
+  source "nginx.service.erb"
   owner "root"
   group "root"
   mode 0755
   sensitive true
-  variables(
-    :pidfile => "#{nginx_path}/nginx.pid",
-    :nginx_path => nginx_path
-  )
+  variables( :nginx_path => nginx_path )
 end
 
 # set proxy environment variables in passenger
@@ -161,6 +151,6 @@ if node[:passenger][:production][:status_server]
   end
 end
 
-service 'passenger' do
+service 'nginx' do
   action [:enable, :start]
 end
