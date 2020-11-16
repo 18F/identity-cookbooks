@@ -80,6 +80,11 @@
     <description>Process segfaulted.</description>
     <group>service_availability,</group>
   </rule>
+
+  <rule id="1011" level="0">
+    <pcre2>ERROR: Can't access file </pcre2>
+    <description>File was deleted before ClamAV could scan it.</description>
+  </rule>
 </group> <!-- SYSLOG,ERRORS -->
 
 
@@ -356,6 +361,11 @@
   <rule id="5200" level="0">
     <pcre2>^hpiod: unable to ParDevice</pcre2>
     <description>Ignoring hpiod for producing useless logs.</description>
+  </rule>
+
+  <rule id="5201" level="0">
+    <pcre2>Memory cgroup out of memory</pcre2>
+    <description>Ignoring cgroup OOM killer because it is not a security issue.</description>
   </rule>
 </group> <!-- SYSLOG,LINUXKERNEL -->
 
