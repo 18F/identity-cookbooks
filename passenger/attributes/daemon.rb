@@ -50,3 +50,4 @@ default[:passenger][:production][:tcp_nopush] = false
 # http://nginx.org/en/docs/ngx_core_module.html#worker_processes
 default[:passenger][:production][:worker_processes] = node.fetch('cpu').fetch('total')
 default[:passenger][:production][:worker_connections] = 1024
+default[:passenger][:production][:nofile_limit] =  node.fetch('passenger').fetch('production').fetch('worker_connections') * 2
