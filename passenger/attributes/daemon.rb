@@ -21,7 +21,8 @@ default[:passenger][:production][:nginx][:version] = '1.18.0'
 # This is a little broad, but because we expect security group rules to prevent
 # anyone except our trusted ALB from connecting anyway, we don't really care
 # who is able to set X-Forwarded-For headers.
-default[:passenger][:production][:realip_from_cidr] = node.fetch(:cloud).fetch('local_ipv4').split('.')[0..1].join('.') + '.0.0/16'
+#default[:passenger][:production][:realip_from_cidr] = node.fetch(:cloud).fetch('local_ipv4').split('.')[0..1].join('.') + '.0.0/16'
+default[:passenger][:production][:realip_from_cidr] = '172.16.0.0/16'
 
 # Tune the following configurations for your environment. For more info see:
 # https://www.phusionpassenger.com/library/config/nginx/optimization

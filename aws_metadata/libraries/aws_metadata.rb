@@ -1,16 +1,14 @@
 # Helper class for getting AWS info for the currently running instance
 class Chef::Recipe::AwsMetadata
 
-  # TODO: all of these attributes can now be retrieved from ohai via
-  # node.fetch('ec2'), but we'd have to pass in the node object explicitly,
-  # which is a nuisance.
-
   # Fetch and parse the instance identity document from the EC2 metadata API
   #
   # @return [Hash]
   def self.get_instance_identity
     c = Chef::HTTP.new('http://169.254.169.254')
-    doc = c.get('/2016-09-02/dynamic/instance-identity/document')
+    v2_token = c.put("/latest/api/token", nil, { 'X-aws-ec2-metadata-token-ttl-seconds': "120" })
+    doc = c.get('/2016-09-02/dynamic/instance-identity/document', { 'X-aws-ec2-metadata-token' => v2_token } )
+    { 'Accept' => 'text/html' }
     JSON.parse(doc)
   end
 
@@ -28,15 +26,17 @@ class Chef::Recipe::AwsMetadata
 
   def self.get_aws_vpc_id
     c = Chef::HTTP.new('http://169.254.169.254')
-    interfaces = c.get('/2016-09-02/meta-data/network/interfaces/macs/')
+    v2_token = c.put("/latest/api/token", nil, { 'X-aws-ec2-metadata-token-ttl-seconds': "120" })
+    interfaces = c.get('/2016-09-02/meta-data/network/interfaces/macs/', { 'X-aws-ec2-metadata-token' => v2_token })
     interfaces = interfaces.split("\n").map { |interface| interface.chomp("/") }
-    c.get("/2016-09-02/meta-data/network/interfaces/macs/#{interfaces.fetch(0)}/vpc-id")
+    c.get("/2016-09-02/meta-data/network/interfaces/macs/#{interfaces.fetch(0)}/vpc-id", { 'X-aws-ec2-metadata-token' => v2_token })
   end
 
   def self.get_aws_vpc_cidr
     c = Chef::HTTP.new('http://169.254.169.254')
-    interfaces = c.get('/2016-09-02/meta-data/network/interfaces/macs/')
+    v2_token = c.put("/latest/api/token", nil, { 'X-aws-ec2-metadata-token-ttl-seconds': "120" })
+    interfaces = c.get('/2016-09-02/meta-data/network/interfaces/macs/', { 'X-aws-ec2-metadata-token' => v2_token })
     interfaces = interfaces.split("\n").map { |interface| interface.chomp("/") }
-    c.get("/2016-09-02/meta-data/network/interfaces/macs/#{interfaces.fetch(0)}/vpc-ipv4-cidr-block")
+    c.get("/2016-09-02/meta-data/network/interfaces/macs/#{interfaces.fetch(0)}/vpc-ipv4-cidr-block", { 'X-aws-ec2-metadata-token' => v2_token })
   end
 end
