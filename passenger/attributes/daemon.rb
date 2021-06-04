@@ -1,21 +1,17 @@
 cache_dir = node.fetch(:identity_shared_attributes).fetch(:cache_dir)
 
-openssl_version = node.fetch(:identity_shared_attributes).fetch(:openssl_version)
-openssl_srcpath = "#{cache_dir}/openssl-#{openssl_version}"
-openssl_installed_path = "/opt/openssl-#{openssl_version}"
-
 default[:passenger][:production][:path] = '/opt/nginx'
 default[:passenger][:production][:native_support_dir] = node.fetch(:passenger).fetch(:production).fetch(:path) + '/passenger-native-support'
 
-default[:passenger][:production][:configure_flags] = "--with-ipv6 --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-ld-opt=\"-L#{openssl_installed_path}/lib\" --with-cc-opt=\"-I#{openssl_installed_path}/include\""
+default[:passenger][:production][:configure_flags] = "--with-ipv6 --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-ld-opt=\"-L/usr/lib/x86_64-linux-gnu/lib\" --with-cc-opt=\"-I/usr/include/x86_64-linux-gnu/openssl\""
 default[:passenger][:production][:log_path] = '/var/log/nginx'
 
 # Enable the status server on 127.0.0.1
 default[:passenger][:production][:status_server] = true
 
 default[:passenger][:production][:user] = node.fetch(:identity_shared_attributes).fetch(:production_user)
-default[:passenger][:production][:version] = '6.0.6'
-default[:passenger][:production][:nginx][:version] = '1.18.0'
+default[:passenger][:production][:version] = '6.0.9'
+default[:passenger][:production][:nginx][:version] = '1.20.1'
 
 # Allow our local /16 to proxy setting X-Forwarded-For
 # This is a little broad, but because we expect security group rules to prevent

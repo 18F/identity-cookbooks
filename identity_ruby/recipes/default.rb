@@ -9,26 +9,14 @@ ENV['RBENV_ROOT'] = rbenv_root
 # install rbenv version from apt
 package 'rbenv'
 
-include_recipe 'ruby_build'
-
-# Set up rbenv with specified directory as RBENV_ROOT, using rubies installed by
-# ruby-build under $RBENV_ROOT/builds/.
-directory rbenv_root
-directory "#{rbenv_root}/shims"
-link "#{rbenv_root}/versions" do
-  to '/opt/ruby_build/builds'
+#install ruby-build
+execute 'install ruby-build' do
+  command 'git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build'
 end
 
-cache_dir = node.fetch(:identity_shared_attributes).fetch('cache_dir')
-openssl_srcpath = "#{cache_dir}/openssl-#{node.fetch(:identity_shared_attributes).fetch(:openssl_version)}"
-# We would use RUBY_CONFIGURE_OPTS except for
-# https://github.com/poise/poise-ruby-build/issues/9
-
-ENV['RUBY_CONFIGURE_OPTS'] = "--with-openssl-dir=#{openssl_srcpath}"
-
 node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
-  ruby_build_ruby version do
-    prefix_path "#{rbenv_root}/builds/#{version}"
+  execute "install ruby version #{version}" do
+    command "rbenv install #{version}"
     notifies :run, 'execute[rbenv rehash]'
   end
 
@@ -36,8 +24,8 @@ node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
   # that .ruby-version files don't need to specify patch release
   if version =~ /\A\d+\.\d+\.\d+\z/
     short_name = version.split('.')[0..1].join('.')
-    link "#{rbenv_root}/builds/#{short_name}" do
-      to "#{rbenv_root}/builds/#{version}"
+    link "#{rbenv_root}/versions/#{short_name}" do
+      to "#{rbenv_root}/versions/#{version}"
     end
   end
 
