@@ -9,6 +9,7 @@ default[:passenger][:production][:native_support_dir] = node.fetch(:passenger).f
 
 default[:passenger][:production][:configure_flags] = "--with-ipv6 --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-ld-opt=\"-L#{openssl_installed_path}/lib\" --with-cc-opt=\"-I#{openssl_installed_path}/include\""
 default[:passenger][:production][:log_path] = '/var/log/nginx'
+default[:passenger][:production][:log_client_ssl] = false
 
 # Enable the status server on 127.0.0.1
 default[:passenger][:production][:status_server] = true
