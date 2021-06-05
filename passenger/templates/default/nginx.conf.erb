@@ -85,6 +85,7 @@ http {
   # Specify a key=value format useful for machine parsing
   log_format kv escape=json
     '{'
+        '"time": "$time_local", '
         '"hostname": "$host", '
         '"dest_port": "$server_port", '
         '"dest_ip": "$server_addr", '
@@ -92,7 +93,6 @@ http {
         '"src_ip": "$realip_remote_addr", '
         '"lb_if_proxied": "$lb_if_proxied", '
         '"user": "$remote_user", '
-        '"time_local": "$time_local", '
         '"protocol": "$server_protocol", '
         '"http_method": "$request_method", '
         '"status": "$status", '
@@ -109,7 +109,7 @@ http {
         '"request": "$request", '
 <% if @passenger.fetch(:log_client_ssl) %>
         '"ssl_client_serial": "$ssl_client_serial", '
-        '"ssl_client_expire_days": "$ssl_client_v_remain", ';
+        '"ssl_client_expire_days": "$ssl_client_v_remain", '
 <% end %>
         '"http_x_amzn_trace_id": "$http_x_amzn_trace_id"'
     '}';
