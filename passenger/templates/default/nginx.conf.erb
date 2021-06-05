@@ -91,7 +91,6 @@ http {
         '"dest_ip": "$server_addr", '
         '"src": "$remote_addr", '
         '"src_ip": "$realip_remote_addr", '
-        '"lb_if_proxied": "$lb_if_proxied", '
         '"user": "$remote_user", '
         '"protocol": "$server_protocol", '
         '"http_method": "$request_method", '
@@ -101,9 +100,11 @@ http {
         '"http_referer": "$http_referer", '
         '"http_user_agent": "$http_user_agent", '
         '"nginx_version": "$nginx_version", '
+<% if @passenger.fetch(:log_alb_headers) %>
+        '"lb_if_proxied": "$lb_if_proxied", '
         '"http_x_forwarded_for": "$http_x_forwarded_for", '
-        '"uri_path": "$uri", '
-        '"uri_query": "$query_string", '
+        '"http_x_amzn_trace_id": "$http_x_amzn_trace_id", '
+<% end %>
         '"response_time": "$upstream_response_time", '
         '"request_time": "$request_time", '
         '"request": "$request", '
@@ -111,7 +112,8 @@ http {
         '"ssl_client_serial": "$ssl_client_serial", '
         '"ssl_client_expire_days": "$ssl_client_v_remain", '
 <% end %>
-        '"http_x_amzn_trace_id": "$http_x_amzn_trace_id"'
+        '"uri_path": "$uri", '
+        '"uri_query": "$query_string"'
     '}';
 
   access_log <%= @log_path or raise "no @log_path" %>/access.log kv;

@@ -9,6 +9,9 @@ default[:passenger][:production][:native_support_dir] = node.fetch(:passenger).f
 
 default[:passenger][:production][:configure_flags] = "--with-ipv6 --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-ld-opt=\"-L#{openssl_installed_path}/lib\" --with-cc-opt=\"-I#{openssl_installed_path}/include\""
 default[:passenger][:production][:log_path] = '/var/log/nginx'
+# Relevant for any NGINX instance behind an ALB
+default[:passenger][:production][:log_alb_headers] = true
+# Relevant only when client certificates are passed directly to NGINX
 default[:passenger][:production][:log_client_ssl] = false
 
 # Enable the status server on 127.0.0.1
