@@ -1,0 +1,186 @@
+#!/bin/bash
+set -eu
+
+# Version 1.0
+
+basename="$(basename "$0")"
+
+CONFIG_DIR=/etc/auto-hostname
+prefix_file="$CONFIG_DIR/prefix"
+domain_file="$CONFIG_DIR/domain"
+
+usage() {
+  cat >&2 <<EOM
+usage: $basename ACTION [options]
+
+ACTION:
+  run      set hostname and hosts
+  dryrun   show what would be changed without making changes
+
+Automatically set instance hostname to include EC2 instance ID. If
+$prefix_file is present, use it as a prefix for the hostname. If
+$domain_file is present, use it as the domain for the hostname.
+
+When changing the hostname, also overwrite /etc/hosts with a new copy that
+contains the new hostname (so sudo doesn't complain).
+
+The resulting hostname will look like:
+
+    PREFIX-i-abcd1234.DOMAIN
+
+By default, to reduce the chances of setting hostname at an undesired time,
+don't set the hostname if it already ends in DOMAIN.
+
+Options:
+
+  --skip-hosts    Don't overwrite /etc/hosts
+  --overwrite     Change hostname even if domain is already DOMAIN
+
+EOM
+}
+
+if [ $# -lt 1 ]; then
+  usage
+  exit 1
+fi
+
+case "$1" in
+  run) realrun=1 ;;
+  dryrun) realrun= ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
+
+shift
+
+skip_hosts=
+overwrite=
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --skip-hosts)
+      skip_hosts=1
+      ;;
+    --overwrite)
+      overwrite=1
+      ;;
+    *)
+      usage
+      exit 1
+  esac
+  shift
+done
+
+# shellcheck disable=SC2009
+# Determine whether we're being run by systemd by looking at our cgroup.
+if ps -o cgroup= $$ | grep ".service" >/dev/null ; then
+  run_by_systemd=1
+else
+  run_by_systemd=
+fi
+
+log() {
+  echo >&2 "$*"
+  # log to syslog unless we're run by systemd, which also sends to syslog
+  if [ -z "$run_by_systemd" ]; then
+    logger -t "$basename" "$*"
+  fi
+}
+
+run() {
+  log "+ $*"
+  "$@"
+}
+
+saferun() {
+  if [ -n "$realrun" ]; then
+    log "+ $*"
+    "$@"
+  else
+    log "(DRY RUN) + $*"
+  fi
+}
+safelog() {
+  if [ -n "$realrun" ]; then
+    log "$*"
+  else
+    log "(DRY RUN) $*"
+  fi
+}
+
+safelog "Starting up"
+
+prefix=
+domain=
+
+if [ -e "$prefix_file" ]; then
+    prefix="$(cat "$prefix_file")"
+fi
+
+if [ -e "$domain_file" ]; then
+    domain="$(cat "$domain_file")"
+fi
+
+INSTANCE_ID_FILE=/run/cloud-init/.instance-id
+if [ -r "$INSTANCE_ID_FILE" ]; then
+  instance_id="$(cat "$INSTANCE_ID_FILE")"
+  log "Found instance ID $instance_id from $INSTANCE_ID_FILE"
+else
+  instance_id="$(run curl -sSf http://169.254.169.254/latest/meta-data/instance-id)"
+fi
+
+# $prefix-$instance_id.$domain
+
+name="$instance_id"
+
+if [ -n "$prefix" ]; then
+  name="$prefix-$name"
+fi
+
+if [ -n "$domain" ]; then
+  name="$name.$domain"
+fi
+
+cur_hostname="$(hostname -f || hostname)"
+if [ "$cur_hostname" = "$name" ]; then
+  log "Hostname is already set to $name"
+  exit
+fi
+
+if [[ $cur_hostname == *.$domain ]]; then
+  log "Hostname $cur_hostname already ends with .$domain"
+  if [ -n "$overwrite" ]; then
+    log "Overwrite is set"
+  else
+    log "Re run with --overwrite to overwrite"
+    exit
+  fi
+fi
+
+safelog "Setting hostname to '$name'"
+saferun hostnamectl set-hostname "$name"
+
+if [ -z "$skip_hosts" ] && ! grep "$name" /etc/hosts >/dev/null; then
+  safelog "Replacing /etc/hosts"
+  if [ -n "$realrun" ]; then
+    run cat > /etc/hosts <<EOM
+# This file was first created by $basename on $(date "+%F %T")
+127.0.1.1 $name
+127.0.0.1 localhost
+
+# The following lines are desirable for IPv6 capable hosts
+::1 ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+ff02::3 ip6-allhosts
+EOM
+  fi
+fi
+
+log 'All done'
+
+# vim: set ft=sh :
