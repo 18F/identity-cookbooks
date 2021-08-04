@@ -37,17 +37,6 @@ node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
       'RBENV_VERSION' => version
     })
   end
-
-  # Backwards compatibility for bundler 1.x
-  # This can be removed once all login.gov apps are using Bundler 2.0
-  # Install bundler 1.x in addition to whatever comes with rbenv
-  execute "install bundler 1.x for rbenv #{version}" do
-    command %w[rbenv exec gem install bundler -v] + ['~> 1.17']
-    environment({
-      'RBENV_ROOT' => rbenv_root,
-      'RBENV_VERSION' => version
-    })
-  end
 end
 
 # set default rbenv ruby version if provided
