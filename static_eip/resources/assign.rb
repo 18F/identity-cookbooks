@@ -9,29 +9,11 @@ property :sentinel_file, String
 
 action :create do
 
-  package 'python'
   package 'awscli'
+  package 'python'
   package 'python-netaddr'
-
-  # This script helps show the current EIP. It's not super useful otherwise.
-  cookbook_file '/usr/local/bin/get-current-eips' do
-    source 'get-current-eips'
-    cookbook 'static_eip' # https://github.com/chef/chef/issues/3681
-    owner 'root'
-    group 'root'
-    mode '0755'
-  end
-
-  # This script is pretty much a drop-in replacement for
-  # aws-ec2-assign-elastic-ip due to the EIP race condition assignment boto bug
-  # https://github.com/skymill/aws-ec2-assign-elastic-ip/pull/25
-  cookbook_file '/usr/local/bin/aws-grab-static-eip' do
-    source 'aws-grab-static-eip'
-    cookbook 'static_eip' # https://github.com/chef/chef/issues/3681
-    owner 'root'
-    group 'root'
-    mode '0755'
-  end
+  package 'python3-pip'
+  execute 'pip3 install aws-ec2-assign-elastic-ip'
 
   # configuration comes from a data bag with specified name and item_name
   # (default private/auto_eip_config.json)
@@ -98,7 +80,7 @@ action :create do
   assign_opts += ['--invalid-ips', invalid_ips] if invalid_ips
 
   execute 'assign eips' do
-    command ['aws-grab-static-eip'] + assign_opts
+    command ['aws-ec2-assign-elastic-ip'] + assign_opts
     notifies :run, 'execute[sleep after eip assignment]', :immediately
     not_if { ::File.exist?(new_resource.sentinel_file) }
     live_stream true
@@ -113,7 +95,7 @@ action :create do
   # sleep after assigning an EIP so that we don't attempt to do stuff involving
   # the network during the cutover
   execute 'sleep after eip assignment' do
-    command "touch '#{new_resource.sentinel_file}' && sleep 20"
+    command "touch '#{new_resource.sentinel_file}'"
     action :nothing
   end
 end
