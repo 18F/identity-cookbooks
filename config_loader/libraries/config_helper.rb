@@ -11,14 +11,6 @@ class Chef::Recipe::ConfigLoader
     else
       raise result
     end
-  rescue StandardError => err
-    if (err.message =~ /An error occurred \(404\)/ &&
-        node.chef_environment != "prod")
-      Chef::Log.warn(err.message) if print_warnings
-      return nil
-    else
-      raise
-    end
   end
 
   # Like load_config, but return nil with a warning if s3 receives an HTTP
@@ -27,7 +19,7 @@ class Chef::Recipe::ConfigLoader
   # return nil.
   def self.load_config_or_nil(node, key, print_warnings: true)
     raw = load_config(node, key)
-  rescue err
+  rescue StandardError => err
     if (err.message =~ /An error occurred \(404\)/ &&
         node.chef_environment != "prod")
       Chef::Log.warn(err.message) if print_warnings
