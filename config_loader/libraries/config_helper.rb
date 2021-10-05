@@ -5,7 +5,7 @@ class Chef::Recipe::ConfigLoader
     url = "s3://#{node['login_dot_gov']['secrets_bucket']}"
     prefix = common ? "common" : node.chef_environment
     url = "#{url}/#{prefix}/#{key}"
-    result = `aws s3 cp #{url} -`.chomp
+    result = `aws s3 cp #{url} - 2>&1`.chomp
     if $?.success?
       result
     else
