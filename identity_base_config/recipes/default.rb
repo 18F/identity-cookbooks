@@ -4,38 +4,6 @@
 #
 # Common packages and config used by all hosts
 
-package [
-  'aptitude',
-  'bmon',
-  'bwm-ng',
-  'colordiff',
-  'dstat',
-  'htop',
-  'iftop',
-  'iotop',
-  'iperf',
-  'moreutils',
-  'ncdu',
-  'nethogs',
-  'pigz',
-  'pv',
-  'pydf',
-  'tree',
-
-  'build-essential',
-  'libpq-dev',
-  'libsasl2-dev',
-  'libffi-dev',
-]
-
-# linux perf
-package [
-  'linux-tools-common',
-  'linux-tools-aws',
-]
-
-package 'python-pip'
-
 execute 'install awscli as needed' do
   command 'pip install awscli'
   not_if { File.exist?('/usr/local/bin/aws') }

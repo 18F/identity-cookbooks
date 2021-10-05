@@ -54,7 +54,3 @@ file '/etc/environment' do
     + "\n"
   )
 end
-
-# install dependencies
-package 'libpq-dev'
-package 'libsasl2-dev'
