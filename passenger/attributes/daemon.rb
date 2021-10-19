@@ -31,7 +31,7 @@ default[:passenger][:production][:gzip] = true
 # Nginx's default is 0, but we don't want that.
 default[:passenger][:production][:keepalive_timeout] = '60 50'
 
-default[:passenger][:production][:limit_connections] = true
+default[:passenger][:production][:limit_connections] = node.chef_environment == 'pt' ? false : true
 
 # Keep max_pool_size and min_instances the same to create a fixed process pool
 default[:passenger][:production][:max_pool_size] = node.fetch('cpu').fetch('total') * 2
