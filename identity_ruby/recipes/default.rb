@@ -9,6 +9,9 @@ ENV['RBENV_ROOT'] = rbenv_root
 # install rbenv version from apt
 package 'rbenv'
 
+# specify bundler version
+bundler_version = node.fetch('identity_ruby').fetch('bundler_version')
+
 #install ruby-build
 execute 'install ruby-build' do
   command 'git clone https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build'
@@ -29,9 +32,9 @@ node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
     end
   end
 
-  #install current version of bundler 2.0
-  execute "install current bundler for rbenv #{version}" do
-    command %w[rbenv exec gem install bundler]
+  #install bundler_version of bundler
+  execute "install bundler #{bundler_version} for rbenv #{version}" do
+    command "rbenv exec gem install bundler:#{bundler_version}"
     environment({
       'RBENV_ROOT' => rbenv_root,
       'RBENV_VERSION' => version
