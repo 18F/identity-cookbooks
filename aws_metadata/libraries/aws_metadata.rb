@@ -39,4 +39,12 @@ class Chef::Recipe::AwsMetadata
     interfaces = interfaces.split("\n").map { |interface| interface.chomp("/") }
     c.get("/2016-09-02/meta-data/network/interfaces/macs/#{interfaces.fetch(0)}/vpc-ipv4-cidr-block", { 'X-aws-ec2-metadata-token' => v2_token })
   end
+
+  def self.get_aws_all_vpc_cidr
+    c = Chef::HTTP.new('http://169.254.169.254')
+    v2_token = c.put("/latest/api/token", nil, { 'X-aws-ec2-metadata-token-ttl-seconds': "120" })
+    interfaces = c.get('/2021-07-15/meta-data/network/interfaces/macs/', { 'X-aws-ec2-metadata-token' => v2_token })
+    interfaces = interfaces.split("\n").map { |interface| interface.chomp("/") }
+    c.get("/2021-07-15/meta-data/network/interfaces/macs/#{interfaces.fetch(0)}/vpc-ipv4-cidr-blocks", { 'X-aws-ec2-metadata-token' => v2_token })
+  end
 end
