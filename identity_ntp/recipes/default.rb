@@ -5,7 +5,7 @@ end
 # Assert that we're on an expected OS release
 release = node.fetch('lsb').fetch('release')
 case release
-when '18.04'
+when '18.04', '20.04'
   # OK
 else
   raise NotImplementedError.new("Unexpected OS release: #{release.inspect}")

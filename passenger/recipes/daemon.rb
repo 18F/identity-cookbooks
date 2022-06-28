@@ -11,7 +11,7 @@ case node[:platform_version]
 when '16.04'
   package 'libcurl4-openssl-dev'
   package 'libpcre3-dev'
-when '18.04'
+when '18.04', '20.04'
   package 'libcurl4-gnutls-dev'
 end
 
