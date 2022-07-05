@@ -14,8 +14,8 @@ default[:passenger][:production][:log_client_ssl] = false
 default[:passenger][:production][:status_server] = true
 
 default[:passenger][:production][:user] = node.fetch(:identity_shared_attributes).fetch(:production_user)
-default[:passenger][:production][:version] = '6.0.9'
-default[:passenger][:production][:nginx][:version] = '1.20.1'
+default[:passenger][:production][:version] = '6.0.14'
+default[:passenger][:production][:nginx][:version] = '1.21.6'
 
 # Allow our local /16 to proxy setting X-Forwarded-For
 # This is a little broad, but because we expect security group rules to prevent
