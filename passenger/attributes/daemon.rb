@@ -15,6 +15,7 @@ default[:passenger][:production][:status_server] = true
 
 default[:passenger][:production][:user] = node.fetch(:identity_shared_attributes).fetch(:production_user)
 default[:passenger][:production][:version] = '6.0.14'
+# Use stable (even-numbered) version of NGINX
 default[:passenger][:production][:nginx][:version] = '1.22'
 
 # Allow our local /16 to proxy setting X-Forwarded-For
