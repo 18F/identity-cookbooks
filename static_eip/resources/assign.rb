@@ -12,6 +12,7 @@ action :create do
   package 'awscli'
   package 'python'
   package 'python-netaddr'
+  execute 'apt-get -q -y remove python-pip-whl'
   package 'python3-pip'
   execute 'pip3 install aws-ec2-assign-elastic-ip'
 
