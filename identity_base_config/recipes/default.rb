@@ -4,8 +4,10 @@
 #
 # Common packages and config used by all hosts
 
+package 'python3-pip'
+
 execute 'install awscli as needed' do
-  command 'pip install awscli'
+  command 'pip3 install awscli'
   not_if { File.exist?('/usr/local/bin/aws') }
 end
 
