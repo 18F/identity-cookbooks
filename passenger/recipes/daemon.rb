@@ -112,6 +112,8 @@ cookbook_file "#{nginx_path}/conf/status-map.conf" do
   mode "0644"
 end
 
+# Grab Cloudfront IP CIDR list, cleanup data to get the CIDRS we want
+
 extend Chef::Mixin::ShellOut
 
 template "#{nginx_path}/conf/nginx.conf" do
@@ -126,7 +128,11 @@ template "#{nginx_path}/conf/nginx.conf" do
     ruby_path: node.fetch(:identity_shared_attributes).fetch(:rbenv_root) + '/shims/ruby',
     :passenger => node[:passenger][:production],
     :pidfile => "/var/run/nginx.pid",
-    :passenger_user => node[:passenger][:production][:user]
+    :passenger_user => node[:passenger][:production][:user],
+    cloudfront_cidrs: lazy {
+      # Grab Cloudfront IP CIDR list, cleanup data to get the CIDRS we want, convert to array to iterate over
+      shell_out("curl https://d7uri8nf7uskq.cloudfront.net/tools/list-cloudfront-ips | tr -d '[]{}\" a-z A-Z _:'").stdout.split(',')
+    }
   )
 end
 
