@@ -112,8 +112,6 @@ cookbook_file "#{nginx_path}/conf/status-map.conf" do
   mode "0644"
 end
 
-# Grab Cloudfront IP CIDR list, cleanup data to get the CIDRS we want
-
 extend Chef::Mixin::ShellOut
 
 template "#{nginx_path}/conf/nginx.conf" do
