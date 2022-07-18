@@ -24,6 +24,8 @@ default[:passenger][:production][:nginx][:version] = '1.22.0'
 # who is able to set X-Forwarded-For headers.
 #default[:passenger][:production][:realip_from_cidr] = node.fetch(:cloud).fetch('local_ipv4').split('.')[0..1].join('.') + '.0.0/16'
 default[:passenger][:production][:realip_from_cidr] = '172.16.0.0/16'
+# Adds Cloudfront CIDRS to the set_real_ip_from to allow for proper client ip preservation
+default[:passenger][:production][:enable_cloudfront_support] = true
 
 # Tune the following configurations for your environment. For more info see:
 # https://www.phusionpassenger.com/library/config/nginx/optimization
