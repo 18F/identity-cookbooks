@@ -59,38 +59,28 @@ http {
   # Enable XSS filter
   add_header X-XSS-Protection "1; mode=block";
 
-<% if @passenger.fetch(:enable_cloudfront_support) %>
   # Enables nginx to check multiple set_real_ip_from lines 
   real_ip_recursive on;
-  # Add Cloudfront CIDRS to trusted CIDR range for real ip computation
-  <% @cloudfront_cidrs.each do |cidr| %>
+
+  real_ip_header X-Forwarded-For;
+
+  # Exclude all private IPv4 space from client source calculation when
+  # processing the X-Forewarded-For header
+  set_real_ip_from 10.0.0.0/8;
+  set_real_ip_from 100.64.0.0/10;
+  set_real_ip_from 172.16.0.0/12;
+  set_real_ip_from 192.168.0.0/16;
+  # TODO - IPv6 CIDR for VPCs will require autoconfiguration
+
+<% if @passenger.fetch(:enable_cloudfront_support) %>
+  # Add CloudFront source address ranges to trusted CIDR range for real ip computation
+  <% @cloudfront_cidrs_v4.each do |cidr| %>
+  set_real_ip_from <%= cidr %>;
+  <% end %>
+  <% @cloudfront_cidrs_v6.each do |cidr| %>
   set_real_ip_from <%= cidr %>;
   <% end %>
 <% end -%>
-   
-
-  # Pull the real client's IP address out of X-Forwarded-For
-  set_real_ip_from <%= @passenger.fetch(:realip_from_cidr) %>;
-  real_ip_header X-Forwarded-For;
-
-  # Create new variable $lb_if_proxied.
-  #
-  # With the realip module enabled, $remote_addr will be the end-user's IP
-  # address, potentially from X-Forwarded-For, and $realip_remote_addr will be
-  # the actual immediate client IP address.
-  #
-  # Return the load balancer IP address ($realip_remote_addr) if the request
-  # looks like it was proxied. If the request does not look like it was proxied
-  # (when $remote_addr is a private IP address), then return "-" instead.
-  map $remote_addr $lb_if_proxied {
-    "~^127\." "-";
-    "~^10\." "-";
-    "~^172\.1[6-9]\." "-";
-    "~^172\.2[0-9]\." "-";
-    "~^172\.3[0-1]\." "-";
-    "~^192\.168\." "-";
-    default $realip_remote_addr;
-  }
 
   # Specify a key=value format useful for machine parsing
   log_format kv escape=json
@@ -111,7 +101,6 @@ http {
         '"http_user_agent": "$http_user_agent", '
         '"nginx_version": "$nginx_version", '
 <% if @passenger.fetch(:log_alb_headers) %>
-        '"lb_if_proxied": "$lb_if_proxied", '
         '"http_x_forwarded_for": "$http_x_forwarded_for", '
         '"http_x_amzn_trace_id": "$http_x_amzn_trace_id", '
 <% end %>

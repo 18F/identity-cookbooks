@@ -18,12 +18,6 @@ default[:passenger][:production][:version] = '6.0.14'
 # Use stable (even-numbered) version of NGINX
 default[:passenger][:production][:nginx][:version] = '1.22.0'
 
-# Allow our local /16 to proxy setting X-Forwarded-For
-# This is a little broad, but because we expect security group rules to prevent
-# anyone except our trusted ALB from connecting anyway, we don't really care
-# who is able to set X-Forwarded-For headers.
-#default[:passenger][:production][:realip_from_cidr] = node.fetch(:cloud).fetch('local_ipv4').split('.')[0..1].join('.') + '.0.0/16'
-default[:passenger][:production][:realip_from_cidr] = '172.16.0.0/16'
 # Adds Cloudfront CIDRS to the set_real_ip_from to allow for proper client ip preservation
 default[:passenger][:production][:enable_cloudfront_support] = true
 
