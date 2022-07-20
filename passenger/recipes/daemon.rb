@@ -133,13 +133,12 @@ template "#{nginx_path}/conf/nginx.conf" do
     cloudfront_cidrs_v4: lazy {
       # Grab Cloudfront IPv4 CIDR list from the CLOUDFRONT_ORIGIN_FACING subset
       # of Amazon IPv4 ranges
-      shell_out("curl -s #{aws_ip_ranges_url} | jq -r '.prefixes[] | select(.service==\\"CLOUDFRONT_ORIGIN_FACING\\") | .ip_prefix'").stdout.split("\n")
-    }
-
+      shell_out("curl -s #{aws_ip_ranges_url} | jq -r '.prefixes[] | select(.service==\"CLOUDFRONT_ORIGIN_FACING\") | .ip_prefix'").stdout.split("\n")
+    },
     cloudfront_cidrs_v6: lazy {
       # Grab Cloudfront IPv6 CIDR list from the CLOUDFRONT subset of Amazon IPv6 ranges
       # (There is no seperate CLOUDFRONT_ORIGIN_FACING set for IPv6)
-      shell_out("curl -s #{aws_ip_ranges_url} | jq -r '.ipv6_prefixes[] | select(.service==\\"CLOUDFRONT\\") | .ipv6_prefix'").stdout.split("\n")
+      shell_out("curl -s #{aws_ip_ranges_url} | jq -r '.ipv6_prefixes[] | select(.service==\"CLOUDFRONT\") | .ipv6_prefix'").stdout.split("\n")
     }
   )
 end
