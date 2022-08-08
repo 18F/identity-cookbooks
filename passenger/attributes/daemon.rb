@@ -5,8 +5,15 @@ default[:passenger][:production][:native_support_dir] = node.fetch(:passenger).f
 
 default[:passenger][:production][:configure_flags] = "--with-ipv6 --with-http_stub_status_module --with-http_ssl_module --with-http_realip_module --with-ld-opt=\"-L/usr/lib/x86_64-linux-gnu/lib\" --with-cc-opt=\"-I/usr/include/x86_64-linux-gnu/openssl\""
 default[:passenger][:production][:log_path] = '/var/log/nginx'
+
 # Relevant for any NGINX instance behind an ALB
 default[:passenger][:production][:log_alb_headers] = true
+
+# Relevant for any NGINX instance behind CloudFront with the related
+# extended headers enabled in the Origin Request Policy
+# See: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-cloudfront-headers.html#cloudfront-headers-viewer-location
+default[:passenger][:production][:log_cloudfront_headers] = true
+
 # Relevant only when client certificates are passed directly to NGINX
 default[:passenger][:production][:log_client_ssl] = false
 
