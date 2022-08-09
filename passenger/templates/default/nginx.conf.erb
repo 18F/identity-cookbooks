@@ -100,6 +100,13 @@ http {
         '"http_referer": "$http_referer", '
         '"http_user_agent": "$http_user_agent", '
         '"nginx_version": "$nginx_version", '
+<% if @passenger.fetch(:log_cloudfront_headers) %>
+        '"http_cloudfront_viewer_address": "$http_cloudfront_viewer_address", '
+        '"http_cloudfront_viewer_http_version": "$http_cloudfront_viewer_http_version", '
+        '"http_cloudfront_viewer_tls": "$http_cloudfront_viewer_tls", '
+        '"http_cloudfront_viewer_country": "$http_cloudfront_viewer_country", '
+        '"http_cloudfront_viewer_country_region": "$http_cloudfront_viewer_country_region", '
+<% end %>
 <% if @passenger.fetch(:log_alb_headers) %>
         '"http_x_forwarded_for": "$http_x_forwarded_for", '
         '"http_x_amzn_trace_id": "$http_x_amzn_trace_id", '
