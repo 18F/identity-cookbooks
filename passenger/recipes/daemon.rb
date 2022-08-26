@@ -13,6 +13,11 @@ when '16.04'
   package 'libpcre3-dev'
 when '18.04'
   package 'libcurl4-gnutls-dev'
+# Needs libpcre3 installed otherwise nginx compiles --without-http_rewrite_module
+when '20.04'
+  package 'libpcre3'
+  package 'libpcre3-dev'
+  package 'libcurl4-gnutls-dev'
 end
 
 nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
