@@ -22,6 +22,7 @@ end
 
 nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
 nginx_version = node[:passenger][:production][:nginx][:version]
+headers_more_version = node[:passenger][:production][:headers_more][:version]
 
 directory "#{nginx_path}/src" do
   mode 0755
@@ -45,17 +46,31 @@ bash "download nginx source and patch for FIPS mode" do
   not_if "test -d #{nginx_path}/src/nginx-#{nginx_version}"
 end
 
+remote_file "#{node[:passenger][:production][:headers_more_path]}.tar.gz" do
+  source 'https://github.com/openresty/headers-more-nginx-module/archive/refs/tags/v' +
+    headers_more_version +
+    '.tar.gz'
+end
+
+execute "tar xzvf #{node[:passenger][:production][:headers_more_path]}.tar.gz -C #{nginx_path}/src"
+
+passenger_install_args = "--auto \
+--nginx-source-dir='#{nginx_path}/src/nginx-#{nginx_version}' \
+--languages ruby \
+--prefix=#{nginx_path} \
+--extra-configure-flags=\"#{node[:passenger][:production][:configure_flags]}\""
+
 bash "install passenger/nginx" do
   code <<-EOH
   set -eux
-  rbenv exec passenger-install-nginx-module --auto --nginx-source-dir="#{nginx_path}/src/nginx-#{nginx_version}" --languages ruby --prefix="#{nginx_path}" --extra-configure-flags="#{node[:passenger][:production][:configure_flags]}"
+  rbenv exec passenger-install-nginx-module #{passenger_install_args}
   rbenv rehash
   EOH
   not_if "test -e #{nginx_path}/sbin/nginx"
 end
 
 execute "compile passenger agent" do
- command "rbenv exec passenger-config compile-agent"
+  command "rbenv exec passenger-config compile-agent"
 end
 
 log_path = node[:passenger][:production][:log_path]
