@@ -50,8 +50,10 @@ http {
   limit_conn_status     429;
   limit_conn_zone       $binary_remote_addr zone=addr:5m;
 <% end -%>
-  # Disable sending server versions
+  # Disable sending server info and versions
   server_tokens off;
+  more_clear_headers Server;
+  more_clear_headers X-Powered-By;
   # Prevent clickJacking attack
   add_header X-Frame-Options SAMEORIGIN;
   # Disable content-type sniffing
