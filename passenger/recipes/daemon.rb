@@ -4,24 +4,31 @@
 
 include_recipe "passenger::install"
 
-package "curl"
-package "jq"
-
-case node[:platform_version]
-when '16.04'
-  package 'libcurl4-openssl-dev'
-  package 'libpcre3-dev'
-when '18.04'
-  package 'libcurl4-gnutls-dev'
-# Needs libpcre3 installed otherwise nginx compiles --without-http_rewrite_module
-when '20.04'
-  package 'libpcre3'
-  package 'libpcre3-dev'
-  package 'libcurl4-gnutls-dev'
+%w(curl jq).each do |pkg|
+  package pkg do
+    retries 12
+    retry_delay 5
+  end
 end
 
-nginx_path = node.fetch(:passenger).fetch(:production).fetch(:path)
-nginx_version = node[:passenger][:production][:nginx][:version]
+platform_packages = []
+case node[:platform_version]
+when '18.04'
+  platform_packages.push('libcurl4-gnutls-dev')
+# Needs libpcre3 installed otherwise nginx compiles --without-http_rewrite_module
+when '20.04'
+  platform_packages.push('libpcre3','libpcre3-dev','libcurl4-gnutls-dev')
+end
+
+platform_packages.each do |pkg|
+  package pkg do
+    retries 12
+    retry_delay 5
+  end
+end
+
+nginx_path           = node.fetch(:passenger).fetch(:production).fetch(:path)
+nginx_version        = node[:passenger][:production][:nginx][:version]
 headers_more_version = node[:passenger][:production][:headers_more][:version]
 
 directory "#{nginx_path}/src" do

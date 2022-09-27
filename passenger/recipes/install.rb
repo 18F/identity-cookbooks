@@ -6,6 +6,8 @@ gem_package "passenger/system" do
   gem_binary (node.fetch(:identity_shared_attributes).fetch(:rbenv_root) + '/shims/gem')
   package_name 'passenger'
   version node[:passenger][:production][:version]
+  retries 12
+  retry_delay 5
   notifies :run, 'execute[rbenv rehash]', :immediately
 end
 

@@ -7,7 +7,11 @@ rbenv_root = node.fetch('identity_ruby').fetch('rbenv_root')
 ENV['RBENV_ROOT'] = rbenv_root
 
 # install rbenv version from apt
-package 'rbenv'
+package 'rbenv' do
+  retries 12
+  retry_delay 5
+end
+
 
 # specify bundler version
 bundler_version = node.fetch('identity_ruby').fetch('bundler_version')

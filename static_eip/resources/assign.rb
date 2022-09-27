@@ -9,11 +9,18 @@ property :sentinel_file, String
 
 action :create do
 
-  package 'awscli'
-  package 'python'
-  package 'python-netaddr'
+  ['awscli','python','python-netaddr'].each do |pkg|
+    package pkg do
+      retries 12
+      retry_delay 5
+    end
+  end
+
   execute 'apt-get -q -y remove python-pip-whl'
-  package 'python3-pip'
+  package 'python3-pip' do
+    retries 12
+    retry_delay 5
+  end
   execute 'pip3 install aws-ec2-assign-elastic-ip'
 
   # configuration comes from a data bag with specified name and item_name
