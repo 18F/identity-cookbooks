@@ -4,7 +4,10 @@
 #
 # Common packages and config used by all hosts
 
-package 'python3-pip'
+package 'python3-pip' do
+  retries 12
+  retry_delay 5
+end
 
 execute 'install awscli as needed' do
   command 'pip3 install awscli'
