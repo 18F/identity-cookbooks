@@ -12,6 +12,10 @@ package 'rbenv' do
   retry_delay 5
 end
 
+package 'libjemalloc-dev' do
+  retries 12
+  retry_delay 5
+end
 
 # specify bundler version
 bundler_version = node.fetch('identity_ruby').fetch('bundler_version')
@@ -23,7 +27,7 @@ end
 
 node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
   execute "install ruby version #{version}" do
-    command "rbenv install #{version}"
+    command "RUBY_CONFIGURE_OPTS=--with-jemalloc rbenv install #{version}"
     notifies :run, 'execute[rbenv rehash]'
   end
 
