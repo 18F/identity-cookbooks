@@ -49,8 +49,8 @@ default[:passenger][:production][:keepalive_timeout] = '60 50'
 default[:passenger][:production][:limit_connections] = true
 
 # Keep max_pool_size and min_instances the same to create a fixed process pool
-default[:passenger][:production][:max_pool_size] = node.fetch('cpu').fetch('total') * 2
-default[:passenger][:production][:min_instances] = node.fetch('cpu').fetch('total') * 2
+default[:passenger][:production][:max_pool_size] = node.fetch('cpu').fetch('total')
+default[:passenger][:production][:min_instances] = node.fetch('cpu').fetch('total')
 
 default[:passenger][:production][:max_instances_per_app] = 0
 default[:passenger][:production][:pool_idle_time] = 0
