@@ -122,6 +122,8 @@ http {
         '"ssl_client_serial": "$ssl_client_serial", '
         '"ssl_client_expire_days": "$ssl_client_v_remain", '
 <% end %>
+        '"tls_protocol": "$ssl_protocol", '
+        '"tls_cipher": "$ssl_cipher", '
         '"uri_path": "$uri", '
         '"uri_query": "$query_string"'
     '}';
