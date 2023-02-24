@@ -1,8 +1,8 @@
 cache_dir = node.fetch(:identity_shared_attributes).fetch(:cache_dir)
 
-default[:passenger][:production][:version] = '6.0.14'
+default[:passenger][:production][:version] = '6.0.17'
 # Use stable (even-numbered) version of NGINX
-default[:passenger][:production][:nginx][:version] = '1.22.0'
+default[:passenger][:production][:nginx][:version] = '1.22.1'
 default[:passenger][:production][:headers_more][:version] = '0.34'
 
 default[:passenger][:production][:path] = '/opt/nginx'
