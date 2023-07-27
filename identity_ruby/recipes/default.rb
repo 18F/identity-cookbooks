@@ -48,6 +48,14 @@ node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
       'RBENV_VERSION' => version
     })
   end
+
+  execute "update rubygems #{version}" do
+    command "rbenv exec gem update --system"
+    environment({
+      'RBENV_ROOT' => rbenv_root,
+      'RBENV_VERSION' => version
+    })
+  end
 end
 
 # set default rbenv ruby version if provided
