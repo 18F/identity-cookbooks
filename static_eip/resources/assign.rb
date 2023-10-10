@@ -9,7 +9,7 @@ property :sentinel_file, String
 
 action :create do
 
-  ['awscli','python','python-netaddr'].each do |pkg|
+  ['python','python-netaddr'].each do |pkg|
     package pkg do
       retries 12
       retry_delay 5
@@ -21,6 +21,12 @@ action :create do
     retries 12
     retry_delay 5
   end
+
+  execute 'install awscli as needed' do
+    command 'pip3 install awscli'
+    not_if { File.exist?('/usr/local/bin/aws') }
+  end
+
   execute 'pip3 install aws-ec2-assign-elastic-ip'
 
   # configuration comes from a data bag with specified name and item_name
