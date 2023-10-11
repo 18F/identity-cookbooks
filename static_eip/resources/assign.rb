@@ -24,7 +24,7 @@ action :create do
 
   execute 'install awscli as needed' do
     command 'pip3 install awscli'
-    not_if { File.exist?('/usr/local/bin/aws') }
+    not_if { ::File.exist?('/usr/local/bin/aws') }
   end
 
   execute 'pip3 install aws-ec2-assign-elastic-ip'
