@@ -23,6 +23,7 @@ default[:passenger][:production][:log_path] = '/var/log/nginx'
 
 # Relevant for any NGINX instance behind an ALB
 default[:passenger][:production][:log_alb_headers] = true
+default[:passenger][:production][:log_alb_ssl] = true
 
 # Relevant for any NGINX instance behind CloudFront with the related
 # extended headers enabled in the Origin Request Policy

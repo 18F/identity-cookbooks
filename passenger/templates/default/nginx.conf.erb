@@ -123,6 +123,10 @@ http {
         '"ssl_client_serial": "$ssl_client_serial", '
         '"ssl_client_expire_days": "$ssl_client_v_remain", '
 <% end %>
+<% if @passenger.fetch(:log_alb_ssl) %>
+        '"http_x_amzn_tls_version": "$http_x_amzn_tls_version", '
+        '"http_x_amzn_tls_cipher_suite": "$http_x_amzn_tls_cipher_suite", '
+<% end %>
         '"tls_protocol": "$ssl_protocol", '
         '"tls_cipher": "$ssl_cipher", '
         '"uri_path": "$uri", '
