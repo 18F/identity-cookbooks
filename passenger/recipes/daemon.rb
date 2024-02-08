@@ -105,14 +105,12 @@ directory "#{nginx_path}/conf/conf.d" do
   mode 0755
   action :create
   recursive true
-  notifies :restart, 'service[passenger]'
 end
 
 directory "#{nginx_path}/conf/sites.d" do
   mode 0755
   action :create
   recursive true
-  notifies :restart, 'service[passenger]'
 end
 
 native_support_dir = node.fetch(:passenger).fetch(:production).fetch(:native_support_dir)
@@ -141,34 +139,6 @@ cookbook_file "#{nginx_path}/conf/status-map.conf" do
 end
 
 extend Chef::Mixin::ShellOut
-
-aws_ip_ranges_url = "https://ip-ranges.amazonaws.com/ip-ranges.json"
-
-template "#{nginx_path}/conf/nginx.conf" do
-  source 'nginx.conf.erb'
-  mode '644'
-  variables(
-    :log_path => log_path,
-    passenger_root: lazy {
-      # dynamically compute passenger root at converge using rbenv
-      shell_out!(%w{rbenv exec passenger-config --root}).stdout.chomp
-    },
-    ruby_path: node.fetch(:identity_shared_attributes).fetch(:rbenv_root) + '/shims/ruby',
-    :passenger => node[:passenger][:production],
-    :pidfile => "/var/run/nginx.pid",
-    :passenger_user => node[:passenger][:production][:user],
-    cloudfront_cidrs_v4: lazy {
-      # Grab Cloudfront IPv4 CIDR list from the CLOUDFRONT_ORIGIN_FACING subset
-      # of Amazon IPv4 ranges
-      shell_out("curl -s #{aws_ip_ranges_url} | jq -r '.prefixes[] | select(.service==\"CLOUDFRONT_ORIGIN_FACING\") | .ip_prefix'").stdout.split("\n")
-    },
-    cloudfront_cidrs_v6: lazy {
-      # Grab Cloudfront IPv6 CIDR list from the CLOUDFRONT subset of Amazon IPv6 ranges
-      # (There is no seperate CLOUDFRONT_ORIGIN_FACING set for IPv6)
-      shell_out("curl -s #{aws_ip_ranges_url} | jq -r '.ipv6_prefixes[] | select(.service==\"CLOUDFRONT\") | .ipv6_prefix'").stdout.split("\n")
-    }
-  )
-end
 
 template "/etc/init.d/passenger" do
   source "passenger.init.erb"
@@ -202,5 +172,5 @@ if node[:passenger][:production][:status_server]
 end
 
 service 'passenger' do
-  action [:enable, :start]
+  action [:enable]
 end
