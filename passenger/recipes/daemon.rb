@@ -170,3 +170,7 @@ if node[:passenger][:production][:status_server]
     mode "0644"
   end
 end
+
+service 'passenger' do
+  action [:disable, :stop]
+end
