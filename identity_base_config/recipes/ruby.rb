@@ -14,7 +14,7 @@ end
 
 global_env_vars = {
   'RBENV_ROOT' => rbenv_root,
-  'PATH' => "/opt/chef/bin:#{rbenv_root}/shims:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games",
+  'PATH' => "#{rbenv_root}/shims:/opt/chef/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games",
   'RAILS_ENV' => 'production',
   'RACK_ENV' => 'production',
 }
