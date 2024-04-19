@@ -7,6 +7,9 @@ class Chef::Recipe::ConfigLoader
     url = "#{url}/#{prefix}/#{key}"
     puts "Debugging CF ENV"
     puts ENV.to_h.to_yaml
+    puts `ls -alh /usr/local/bin/aws`
+    puts `head /usr/local/bin/aws`
+
     result = `/usr/local/bin/aws s3 cp #{url} - 2>&1`
     if $?.success?
       result
