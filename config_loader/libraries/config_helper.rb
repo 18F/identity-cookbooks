@@ -10,7 +10,10 @@ class Chef::Recipe::ConfigLoader
     puts `ls -alh /usr/local/bin/`
     puts `ls -alh /`
     puts Dir.pwd
-
+    puts `mount`
+    puts `df`
+    puts `lsblk`
+    puts `findmnt /`
     result = `/usr/local/bin/aws s3 cp #{url} - 2>&1`
     if $?.success?
       result
