@@ -14,6 +14,8 @@ class Chef::Recipe::ConfigLoader
     puts `df`
     puts `lsblk`
     puts `findmnt /`
+    puts `locate -i aws`
+    
     result = `/usr/local/bin/aws s3 cp #{url} - 2>&1`
     if $?.success?
       result
