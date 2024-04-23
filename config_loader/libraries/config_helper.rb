@@ -5,18 +5,7 @@ class Chef::Recipe::ConfigLoader
     url = app ? "s3://#{node['login_dot_gov']['app_secrets_bucket']}" : "s3://#{node['login_dot_gov']['secrets_bucket']}"
     prefix = common ? "common" : node.chef_environment
     url = "#{url}/#{prefix}/#{key}"
-    puts "Debugging CF ENV"
-    puts ENV.to_h.to_yaml
-    puts `ls -alh /usr/local/bin/`
-    puts `ls -alh /`
-    puts Dir.pwd
-    puts `mount`
-    puts `df`
-    puts `lsblk`
-    puts `findmnt /`
-#    puts `locate -i aws`
-
-    result = `/usr/bin/aws s3 cp #{url} - 2>&1`
+    result = `aws s3 cp #{url} - 2>&1`
     if $?.success?
       result
     else
@@ -46,7 +35,7 @@ class Chef::Recipe::ConfigLoader
     url = app ? "s3://#{node['login_dot_gov']['app_secrets_bucket']}" : "s3://#{node['login_dot_gov']['secrets_bucket']}"
     prefix = common ? "common" : node.chef_environment
     url = "#{url}/#{prefix}/#{key}"
-    raw = `/usr/bin/aws s3 cp #{url} - 2>&1`.chomp
+    raw = `aws s3 cp #{url} - 2>&1`.chomp
     if $?.success?
       JSON.parse(raw)
     else
