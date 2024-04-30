@@ -9,12 +9,6 @@ package 'python3-pip' do
   retry_delay 5
 end
 
-execute 'install awscli as needed' do
-  command 'pip3 install awscli'
-  not_if { ::File.exist?('/usr/bin/aws') }
-  not_if { ::File.exist?('/usr/local/bin/aws') }
-end
-
 # common scripts and aliases
 
 cookbook_file '/usr/local/bin/id-apt-upgrade' do
