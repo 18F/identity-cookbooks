@@ -10,8 +10,7 @@ default[:passenger][:production][:headers_more_path] = node[:passenger][:product
   '/src/headers-more-nginx-module-' +
   node[:passenger][:production][:headers_more][:version]
 
-default[:passenger][:production][:configure_flags] = "--with-ipv6 \
-  --with-http_stub_status_module \
+default[:passenger][:production][:configure_flags] = "--with-http_stub_status_module \
   --with-http_ssl_module \
   --with-http_realip_module \
   --with-ld-opt=\"-L/usr/lib/x86_64-linux-gnu/lib\" \
