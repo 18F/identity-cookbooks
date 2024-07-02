@@ -61,23 +61,14 @@ end
 
 execute "tar xzvf #{node[:passenger][:production][:headers_more_path]}.tar.gz -C #{nginx_path}/src"
 
-passenger_install_args = "--auto \
---nginx-source-dir='#{nginx_path}/src/nginx-#{nginx_version}' \
---languages ruby \
---prefix=#{nginx_path} \
---extra-configure-flags=\"#{node[:passenger][:production][:configure_flags]}\""
-
 bash "install passenger/nginx" do
   code <<-EOH
-  set -eux
-  rbenv exec passenger-install-nginx-module #{passenger_install_args}
-  rbenv rehash
+  cd #{nginx_path}/src/nginx-#{nginx_version}
+  sh ./configure --prefix='#{nginx_path}' --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_addition_module #{node[:passenger][:production][:configure_flags]}
+  make
+  make install
   EOH
   not_if "test -e #{nginx_path}/sbin/nginx"
-end
-
-execute "compile passenger agent" do
-  command "rbenv exec passenger-config compile-agent"
 end
 
 log_path = node[:passenger][:production][:log_path]
@@ -113,26 +104,6 @@ directory "#{nginx_path}/conf/sites.d" do
   recursive true
 end
 
-native_support_dir = node.fetch(:passenger).fetch(:production).fetch(:native_support_dir)
-
-# directory for compiling native ruby version modules
-directory native_support_dir do
-  mode '0755'
-end
-
-cookbook_file "#{nginx_path}/compile-passenger-module" do
-  mode '0755'
-  source 'compile-passenger-module'
-  sensitive true # not actually sensitive, but verbose
-end
-
-execute 'compile passenger modules for all available ruby versions' do
-  command %W[#{nginx_path}/compile-passenger-module ALL]
-  environment(
-    'PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR' => native_support_dir,
-  )
-end
-
 cookbook_file "#{nginx_path}/conf/status-map.conf" do
   source "status-map.conf"
   mode "0644"
@@ -160,7 +131,6 @@ file "/etc/default/passenger" do
 export http_proxy=#{Chef::Config['http_proxy']}
 export https_proxy=#{Chef::Config['https_proxy']}
 export no_proxy=#{Chef::Config['no_proxy']}
-export PASSENGER_NATIVE_SUPPORT_OUTPUT_DIR='#{native_support_dir}'
   EOM
 end
 
