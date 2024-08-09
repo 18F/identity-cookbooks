@@ -2,8 +2,6 @@
 # Cookbook Name:: passenger
 # Recipe:: production
 
-include_recipe "passenger::install"
-
 %w(curl jq).each do |pkg|
   package pkg do
     retries 12
@@ -27,9 +25,9 @@ platform_packages.each do |pkg|
   end
 end
 
-nginx_path           = node.fetch(:passenger).fetch(:production).fetch(:path)
-nginx_version        = node[:passenger][:production][:nginx][:version]
-headers_more_version = node[:passenger][:production][:headers_more][:version]
+nginx_path           = node.fetch(:nginx).fetch(:path)
+nginx_version        = node[:nginx][:version]
+headers_more_version = node[:nginx][:headers_more][:version]
 
 directory "#{nginx_path}/src" do
   mode 0755
@@ -53,25 +51,25 @@ bash "download nginx source and patch for FIPS mode" do
   not_if "test -d #{nginx_path}/src/nginx-#{nginx_version}"
 end
 
-remote_file "#{node[:passenger][:production][:headers_more_path]}.tar.gz" do
+remote_file "#{node[:nginx][:headers_more_path]}.tar.gz" do
   source 'https://github.com/openresty/headers-more-nginx-module/archive/refs/tags/v' +
     headers_more_version +
     '.tar.gz'
 end
 
-execute "tar xzvf #{node[:passenger][:production][:headers_more_path]}.tar.gz -C #{nginx_path}/src"
+execute "tar xzvf #{node[:nginx][:headers_more_path]}.tar.gz -C #{nginx_path}/src"
 
-bash "install passenger/nginx" do
+bash "install nginx" do
   code <<-EOH
   cd #{nginx_path}/src/nginx-#{nginx_version}
-  sh ./configure --prefix='#{nginx_path}' --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_addition_module #{node[:passenger][:production][:configure_flags]}
+  sh ./configure --prefix='#{nginx_path}' --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_addition_module #{node[:nginx][:configure_flags]}
   make
   make install
   EOH
   not_if "test -e #{nginx_path}/sbin/nginx"
 end
 
-log_path = node[:passenger][:production][:log_path]
+log_path = node[:nginx][:log_path]
 
 directory log_path do
   mode 0750
@@ -111,30 +109,7 @@ end
 
 extend Chef::Mixin::ShellOut
 
-template "/etc/init.d/passenger" do
-  source "passenger.init.erb"
-  owner "root"
-  group "root"
-  mode 0755
-  sensitive true
-  variables(
-    :pidfile => "#{nginx_path}/nginx.pid",
-    :nginx_path => nginx_path
-  )
-end
-
-# set proxy environment variables in passenger
-# could alternatively source /etc/profile.d/proxy-config.sh, but it won't exist
-# if the proxy isn't enabled
-file "/etc/default/passenger" do
-  content <<-EOM
-export http_proxy=#{Chef::Config['http_proxy']}
-export https_proxy=#{Chef::Config['https_proxy']}
-export no_proxy=#{Chef::Config['no_proxy']}
-  EOM
-end
-
-if node[:passenger][:production][:status_server]
+if node[:nginx][:status_server]
   cookbook_file "#{nginx_path}/conf/sites.d/status.conf" do
     source "status.conf"
     mode "0644"

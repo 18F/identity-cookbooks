@@ -1,23 +1,22 @@
 cache_dir = node.fetch(:identity_shared_attributes).fetch(:cache_dir)
 
 # Use stable (even-numbered) version of NGINX
-default[:passenger][:production][:nginx][:version] = '1.24.0'
-default[:passenger][:production][:headers_more][:version] = '0.37'
+default[:nginx][:version] = '1.24.0'
+default[:nginx][:headers_more][:version] = '0.37'
 
-default[:passenger][:production][:path] = '/opt/nginx'
-default[:passenger][:production][:native_support_dir] = node.fetch(:passenger).fetch(:production).fetch(:path) + '/passenger-native-support'
-default[:passenger][:production][:headers_more_path] = node[:passenger][:production][:path] +
+default[:nginx][:path] = '/opt/nginx'
+default[:nginx][:headers_more_path] = node[:nginx][:path] +
   '/src/headers-more-nginx-module-' +
-  node[:passenger][:production][:headers_more][:version]
+  node[:nginx][:headers_more][:version]
 
-default[:passenger][:production][:configure_flags] = "--with-http_stub_status_module \
+default[:nginx][:configure_flags] = "--with-http_stub_status_module \
   --with-http_ssl_module \
   --with-http_realip_module \
   --with-ld-opt=\"-L/usr/lib/x86_64-linux-gnu/lib\" \
   --with-cc-opt=\"-I/usr/include/x86_64-linux-gnu/openssl\" \
-  --add-module=#{node[:passenger][:production][:headers_more_path]}"
+  --add-module=#{node[:nginx][:headers_more_path]}"
 
-default[:passenger][:production][:log_path] = '/var/log/nginx'
+default[:nginx][:log_path] = '/var/log/nginx'
 
 # Enable the nginx status server on 127.0.0.1
-default[:passenger][:production][:status_server] = true
+default[:nginx][:status_server] = true
