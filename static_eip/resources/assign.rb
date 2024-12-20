@@ -85,11 +85,25 @@ action :create do
     raise ArgumentError.new("must have valid_ips key in env config in #{bag_item_name.inspect}")
   end
 
+  cookbook_file '/usr/local/bin/assign-iep' do
+    source 'assign_eip.bash'
+    owner 'root'
+    group 'root'
+    mode '0755'
+  end
+
+  cookbook_file '/usr/local/bin/find-available-eip' do
+    source 'find_available_eip.rb'
+    owner 'root'
+    group 'root'
+    mode '0755'
+  end
+
   assign_opts = [valid_ips]
   assign_opts += [invalid_ips] if invalid_ips
 
   execute 'assign eips' do
-    command ['bash', './assign_eip.bash'] + assign_opts
+    command ['assign-iep'] + assign_opts
     notifies :run, 'execute[sleep after eip assignment]', :immediately
     not_if { ::File.exist?(new_resource.sentinel_file) }
     live_stream true
