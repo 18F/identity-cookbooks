@@ -85,8 +85,7 @@ action :create do
     raise ArgumentError.new("must have valid_ips key in env config in #{bag_item_name.inspect}")
   end
 
-  assign_opts
-  assign_opts += [valid_ips]
+  assign_opts = [valid_ips]
   assign_opts += [invalid_ips] if invalid_ips
 
   execute 'assign eips' do
