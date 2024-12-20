@@ -9,20 +9,20 @@ property :sentinel_file, String
 
 action :create do
 
-  ['python','python-netaddr'].each do |pkg|
-    package pkg do
-      retries 12
-      retry_delay 5
-    end
-  end
+  # ['python','python-netaddr'].each do |pkg|
+  #   package pkg do
+  #     retries 12
+  #     retry_delay 5
+  #   end
+  # end
 
-  execute 'apt-get -q -y remove python-pip-whl'
-  package 'python3-pip' do
-    retries 12
-    retry_delay 5
-  end
+  # execute 'apt-get -q -y remove python-pip-whl'
+  # package 'python3-pip' do
+  #   retries 12
+  #   retry_delay 5
+  # end
 
-  execute 'pip3 install aws-ec2-assign-elastic-ip'
+  # execute 'pip3 install aws-ec2-assign-elastic-ip'
 
   # configuration comes from a data bag with specified name and item_name
   # (default private/auto_eip_config.json)
@@ -85,11 +85,12 @@ action :create do
     raise ArgumentError.new("must have valid_ips key in env config in #{bag_item_name.inspect}")
   end
 
-  assign_opts = ['--valid-ips', valid_ips]
-  assign_opts += ['--invalid-ips', invalid_ips] if invalid_ips
+  assign_opts
+  assign_opts += [valid_ips]
+  assign_opts += [invalid_ips] if invalid_ips
 
   execute 'assign eips' do
-    command ['aws-ec2-assign-elastic-ip'] + assign_opts
+    command ['bash', './assign_eip.bash'] + assign_opts
     notifies :run, 'execute[sleep after eip assignment]', :immediately
     not_if { ::File.exist?(new_resource.sentinel_file) }
     live_stream true
