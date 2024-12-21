@@ -2,13 +2,6 @@
 # Cookbook:: identity_base_config
 # Recipe:: default
 #
-# Common packages and config used by all hosts
-
-package 'python3-pip' do
-  retries 12
-  retry_delay 5
-end
-
 # common scripts and aliases
 
 cookbook_file '/usr/local/bin/id-apt-upgrade' do
