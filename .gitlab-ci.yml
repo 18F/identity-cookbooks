@@ -4,6 +4,11 @@ include:
  - template: Security/Secret-Detection.gitlab-ci.yml 
  - template: Security/SAST.gitlab-ci.yml
  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+ - local: .gitlab-ci-rules.yml
+ - local: .gitlab-ci-devenv.yml
+
+variables:
+  ECR_REGISTRY: $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
 
 secret_detection:
   allow_failure: false
