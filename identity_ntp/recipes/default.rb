@@ -11,6 +11,8 @@ else
   raise NotImplementedError.new("Unexpected OS release: #{release.inspect}")
 end
 
+package 'systemd-timesyncd'
+
 file '/etc/systemd/timesyncd.conf' do
   owner 'root'
   group 'root'
