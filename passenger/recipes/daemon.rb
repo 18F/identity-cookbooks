@@ -16,7 +16,7 @@ case node[:platform_version]
 when '18.04'
   platform_packages.push('libcurl4-gnutls-dev')
 # Needs libpcre3 installed otherwise nginx compiles --without-http_rewrite_module
-when '20.04'
+when '20.04', '22.04'
   platform_packages.push('libpcre3','libpcre3-dev','libcurl4-gnutls-dev')
 end
 
