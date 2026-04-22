@@ -1,7 +1,7 @@
 cache_dir = node.fetch(:identity_shared_attributes).fetch(:cache_dir)
 
 # Use stable (even-numbered) version of NGINX
-default[:passenger][:production][:nginx][:version] = '1.24.0'
+default[:passenger][:production][:nginx][:version] = '1.28.2'
 default[:passenger][:production][:headers_more][:version] = '0.37'
 
 default[:passenger][:production][:path] = '/opt/nginx'
