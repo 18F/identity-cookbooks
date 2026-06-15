@@ -4,6 +4,9 @@
 default['identity_ruby']['rbenv_root'] = '/opt/ruby_build'
 default['identity_ruby']['bundler_version'] = nil
 
+# ruby-build version to install
+default['identity_ruby']['ruby_build_version'] = nil
+
 # Array of which ruby versions to install
 default['identity_ruby']['ruby_versions'] = []
 
