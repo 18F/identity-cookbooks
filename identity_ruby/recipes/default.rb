@@ -20,9 +20,12 @@ end
 # specify bundler version
 bundler_version = node.fetch('identity_ruby').fetch('bundler_version')
 
+# specify ruby-build version
+ruby_build_version = node.fetch('identity_ruby').fetch('ruby_build_version')
+
 #install ruby-build
 execute 'install ruby-build' do
-  command 'git clone --branch v20250811 --depth 1 https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build'
+  command %(git clone --branch #{ruby_build_version} --depth 1 https://github.com/rbenv/ruby-build.git "$(rbenv root)"/plugins/ruby-build)
 end
 
 node.fetch('identity_ruby').fetch('ruby_versions').each do |version|
