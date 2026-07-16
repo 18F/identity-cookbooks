@@ -16,7 +16,7 @@ case node[:platform_version]
 when '18.04'
   platform_packages.push('libcurl4-gnutls-dev')
 # Needs libpcre3 installed otherwise nginx compiles --without-http_rewrite_module
-when '20.04'
+else
   platform_packages.push('libpcre3','libpcre3-dev','libcurl4-gnutls-dev')
 end
 
@@ -47,8 +47,6 @@ bash "download nginx source and patch for FIPS mode" do
   cd #{nginx_path}/src
   wget https://nginx.org/download/nginx-#{nginx_version}.tar.gz
   tar zxpf nginx-#{nginx_version}.tar.gz
-  cd nginx-#{nginx_version}
-  patch -p1 < ../fipsmode.patch
   EOH
   not_if "test -d #{nginx_path}/src/nginx-#{nginx_version}"
 end
