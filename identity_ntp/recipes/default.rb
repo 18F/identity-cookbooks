@@ -5,11 +5,12 @@ end
 # Assert that we're on an expected OS release
 release = node.fetch('lsb').fetch('release')
 case release
-when '18.04', '20.04' , '22.04'
-  # OK
-else
-  raise NotImplementedError.new("Unexpected OS release: #{release.inspect}")
+when  '22.04'
+  package 'systemd-timesyncd' do
+    action :install
+  end
 end
+
 
 file '/etc/systemd/timesyncd.conf' do
   owner 'root'
