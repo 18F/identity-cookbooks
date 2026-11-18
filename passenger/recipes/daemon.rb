@@ -64,7 +64,7 @@ execute "tar xzvf #{node[:passenger][:production][:headers_more_path]}.tar.gz -C
 bash "install passenger/nginx" do
   code <<-EOH
   cd #{nginx_path}/src/nginx-#{nginx_version}
-  sh ./configure --prefix='#{nginx_path}' --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_addition_module #{node[:passenger][:production][:configure_flags]}
+  sh ./configure --prefix='#{nginx_path}' --with-http_ssl_module --with-http_realip_module --with-http_gzip_static_module --with-http_stub_status_module --with-http_addition_module #{node[:passenger][:production][:configure_flags]}
   make
   make install
   EOH
